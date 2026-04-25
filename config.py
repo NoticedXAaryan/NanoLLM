@@ -9,6 +9,7 @@ class ModelConfig:
     embed_dim: int = 384
     num_heads: int = 6
     num_layers: int = 6
+    ffn_multiplier: int = 4
     max_seq_len: int = 256
     dropout: float = 0.1
 

@@ -1,12 +1,22 @@
 # model.py
-# Baseline GPT-2 style transformer (pre-LLaMA architecture).
-# Uses LayerNorm, GELU, and absolute positional embeddings.
+# Refactoring towards LLaMA architecture.
+# Uses RMSNorm and SwiGLU.
 
 import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from config import ModelConfig
+
+class RMSNorm(nn.Module):
+    def __init__(self, dim: int, eps: float = 1e-6):
+        super().__init__()
+        self.eps = eps
+        self.weight = nn.Parameter(torch.ones(dim))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        norm = x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
+        return self.weight * norm
 
 class CausalSelfAttention(nn.Module):
     def __init__(self, cfg: ModelConfig):
@@ -32,29 +42,30 @@ class CausalSelfAttention(nn.Module):
         y = y.transpose(1, 2).contiguous().view(B, T, D)
         return self.resid_dropout(self.c_proj(y))
 
-class FeedForward(nn.Module):
+class SwiGLU(nn.Module):
     def __init__(self, cfg: ModelConfig):
         super().__init__()
-        hidden = cfg.embed_dim * 4
-        self.c_fc = nn.Linear(cfg.embed_dim, hidden)
-        self.act = nn.GELU()
-        self.c_proj = nn.Linear(hidden, cfg.embed_dim)
-        self.dropout = nn.Dropout(cfg.dropout)
-        
-    def forward(self, x):
-        return self.dropout(self.c_proj(self.act(self.c_fc(x))))
+        hidden = int(2 * (cfg.ffn_multiplier * cfg.embed_dim) / 3)
+        hidden = ((hidden + 63) // 64) * 64
+        self.w1 = nn.Linear(cfg.embed_dim, hidden, bias=False)
+        self.w2 = nn.Linear(cfg.embed_dim, hidden, bias=False)
+        self.w3 = nn.Linear(hidden, cfg.embed_dim, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.w3(F.silu(self.w1(x)) * self.w2(x))
 
 class TransformerBlock(nn.Module):
     def __init__(self, cfg: ModelConfig):
         super().__init__()
-        self.ln_1 = nn.LayerNorm(cfg.embed_dim)
+        self.ln_1 = RMSNorm(cfg.embed_dim)
         self.attn = CausalSelfAttention(cfg)
-        self.ln_2 = nn.LayerNorm(cfg.embed_dim)
-        self.mlp = FeedForward(cfg)
+        self.ln_2 = RMSNorm(cfg.embed_dim)
+        self.mlp = SwiGLU(cfg)
+        self.dropout = nn.Dropout(cfg.dropout)
 
     def forward(self, x):
-        x = x + self.attn(self.ln_1(x))
-        x = x + self.mlp(self.ln_2(x))
+        x = x + self.dropout(self.attn(self.ln_1(x)))
+        x = x + self.dropout(self.mlp(self.ln_2(x)))
         return x
 
 class MiniLLM(nn.Module):
@@ -65,8 +76,9 @@ class MiniLLM(nn.Module):
         self.wpe = nn.Embedding(cfg.max_seq_len, cfg.embed_dim)
         self.drop = nn.Dropout(cfg.dropout)
         self.blocks = nn.ModuleList([TransformerBlock(cfg) for _ in range(cfg.num_layers)])
-        self.ln_f = nn.LayerNorm(cfg.embed_dim)
+        self.ln_f = RMSNorm(cfg.embed_dim)
         self.lm_head = nn.Linear(cfg.embed_dim, cfg.vocab_size, bias=False)
+        self.lm_head.weight = self.wte.weight
 
     def forward(self, idx, targets=None):
         B, T = idx.size()
