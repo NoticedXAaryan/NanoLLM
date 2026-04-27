@@ -18,29 +18,47 @@ class RMSNorm(nn.Module):
         norm = x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
         return self.weight * norm
 
+def precompute_rope_freqs(head_dim: int, max_seq_len: int, theta: float = 10000.0) -> torch.Tensor:
+    freqs = 1.0 / (theta ** (torch.arange(0, head_dim, 2).float() / head_dim))
+    t = torch.arange(max_seq_len)
+    freqs = torch.outer(t, freqs)
+    return torch.polar(torch.ones_like(freqs), freqs)
+
+def apply_rope(x: torch.Tensor, freqs: torch.Tensor) -> torch.Tensor:
+    B, H, T, D = x.shape
+    x_complex = torch.view_as_complex(x.float().reshape(B, H, T, D // 2, 2))
+    freqs = freqs[:T].unsqueeze(0).unsqueeze(0)
+    x_rotated = x_complex * freqs
+    return torch.view_as_real(x_rotated).reshape(B, H, T, D).type_as(x)
+
 class CausalSelfAttention(nn.Module):
     def __init__(self, cfg: ModelConfig):
         super().__init__()
         assert cfg.embed_dim % cfg.num_heads == 0
-        self.c_attn = nn.Linear(cfg.embed_dim, 3 * cfg.embed_dim)
-        self.c_proj = nn.Linear(cfg.embed_dim, cfg.embed_dim)
-        self.attn_dropout = nn.Dropout(cfg.dropout)
-        self.resid_dropout = nn.Dropout(cfg.dropout)
         self.num_heads = cfg.num_heads
         self.head_dim = cfg.embed_dim // cfg.num_heads
+        self.dropout = cfg.dropout
 
-    def forward(self, x):
-        B, T, D = x.size()
-        qkv = self.c_attn(x)
-        q, k, v = qkv.split(D, dim=2)
+        self.qkv = nn.Linear(cfg.embed_dim, 3 * cfg.embed_dim, bias=False)
+        self.out_proj = nn.Linear(cfg.embed_dim, cfg.embed_dim, bias=False)
+        self.attn_dropout = nn.Dropout(cfg.dropout)
+
+    def forward(self, x: torch.Tensor, freqs: torch.Tensor) -> torch.Tensor:
+        B, T, D = x.shape
+        q, k, v = self.qkv(x).split(D, dim=2)
         
-        q = q.view(B, T, self.num_heads, self.head_dim).transpose(1, 2)
-        k = k.view(B, T, self.num_heads, self.head_dim).transpose(1, 2)
-        v = v.view(B, T, self.num_heads, self.head_dim).transpose(1, 2)
+        def reshape(t):
+            return t.view(B, T, self.num_heads, self.head_dim).transpose(1, 2)
+            
+        q, k, v = reshape(q), reshape(k), reshape(v)
         
-        y = F.scaled_dot_product_attention(q, k, v, is_causal=True)
-        y = y.transpose(1, 2).contiguous().view(B, T, D)
-        return self.resid_dropout(self.c_proj(y))
+        q = apply_rope(q, freqs)
+        k = apply_rope(k, freqs)
+        
+        dropout_p = self.dropout if self.training else 0.0
+        attn_out = F.scaled_dot_product_attention(q, k, v, dropout_p=dropout_p, is_causal=True)
+        attn_out = attn_out.transpose(1, 2).contiguous().view(B, T, D)
+        return self.out_proj(attn_out)
 
 class SwiGLU(nn.Module):
     def __init__(self, cfg: ModelConfig):
@@ -63,8 +81,8 @@ class TransformerBlock(nn.Module):
         self.mlp = SwiGLU(cfg)
         self.dropout = nn.Dropout(cfg.dropout)
 
-    def forward(self, x):
-        x = x + self.dropout(self.attn(self.ln_1(x)))
+    def forward(self, x, freqs):
+        x = x + self.dropout(self.attn(self.ln_1(x), freqs))
         x = x + self.dropout(self.mlp(self.ln_2(x)))
         return x
 
@@ -72,25 +90,25 @@ class MiniLLM(nn.Module):
     def __init__(self, cfg: ModelConfig):
         super().__init__()
         self.cfg = cfg
-        self.wte = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
-        self.wpe = nn.Embedding(cfg.max_seq_len, cfg.embed_dim)
-        self.drop = nn.Dropout(cfg.dropout)
+        self.token_embed = nn.Embedding(cfg.vocab_size, cfg.embed_dim)
+        self.embed_dropout = nn.Dropout(cfg.dropout)
         self.blocks = nn.ModuleList([TransformerBlock(cfg) for _ in range(cfg.num_layers)])
-        self.ln_f = RMSNorm(cfg.embed_dim)
+        self.norm_final = RMSNorm(cfg.embed_dim)
         self.lm_head = nn.Linear(cfg.embed_dim, cfg.vocab_size, bias=False)
-        self.lm_head.weight = self.wte.weight
+        self.lm_head.weight = self.token_embed.weight
+        
+        freqs = precompute_rope_freqs(cfg.embed_dim // cfg.num_heads, cfg.max_seq_len)
+        self.register_buffer("rope_freqs", freqs)
 
     def forward(self, idx, targets=None):
         B, T = idx.size()
-        pos = torch.arange(0, T, dtype=torch.long, device=idx.device)
         
-        x = self.wte(idx) + self.wpe(pos)
-        x = self.drop(x)
+        x = self.embed_dropout(self.token_embed(idx))
         
         for block in self.blocks:
-            x = block(x)
+            x = block(x, self.rope_freqs)
             
-        x = self.ln_f(x)
+        x = self.norm_final(x)
         logits = self.lm_head(x)
         
         loss = None
