@@ -20,6 +20,28 @@ from tokenizer import get_tokenizer, encode, decode
 from utils import cosine_lr_with_warmup, save_checkpoint, plot_loss_curve, log_to_jsonl
 
 
+def format_time(seconds: float) -> str:
+    """Format seconds into a human-readable string."""
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    elif seconds < 3600:
+        m, s = divmod(int(seconds), 60)
+        return f"{m}m {s}s"
+    else:
+        h, remainder = divmod(int(seconds), 3600)
+        m, s = divmod(remainder, 60)
+        return f"{h}h {m}m {s}s"
+
+
+def get_gpu_mem_mb() -> tuple[float, float]:
+    """Return (allocated_MB, reserved_MB) on GPU 0."""
+    if torch.cuda.is_available():
+        alloc = torch.cuda.memory_allocated(0) / 1024**2
+        reserv = torch.cuda.memory_reserved(0) / 1024**2
+        return alloc, reserv
+    return 0.0, 0.0
+
+
 def evaluate(model, val_loader, device, max_batches=50):
     """Compute average validation loss over max_batches batches."""
     model.eval()
@@ -58,17 +80,17 @@ def generate_sample(model, device):
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[train] Using device: {device}")
+
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
 
     # ── Update vocab size from tokenizer ─────────────────────────────────────
     tok = get_tokenizer()
     mcfg.vocab_size = tok.vocab_size
-    print(f"[train] Vocab size: {mcfg.vocab_size}")
 
     # ── Build model ───────────────────────────────────────────────────────────
     model = MiniLLM(mcfg).to(device)
     n_params = model.count_parameters()
-    print(f"[train] Model parameters: {n_params:,}  (~{n_params/1e6:.1f}M)")
 
     # ── Optimizer ─────────────────────────────────────────────────────────────
     # Separate weight decay: don't apply to biases, norms, embeddings
@@ -89,14 +111,47 @@ def main():
     log_path = os.path.join(tcfg.log_dir, "train_log.jsonl")
     train_losses, val_losses, logged_steps = [], [], []
 
+    # ── Derived constants ─────────────────────────────────────────────────────
+    effective_batch = tcfg.batch_size * tcfg.grad_accum_steps
+    tokens_per_step = effective_batch * mcfg.max_seq_len
+
+    # ── Startup banner ────────────────────────────────────────────────────────
+    gpu_name = torch.cuda.get_device_name(0) if device.type == "cuda" else "N/A"
+    gpu_mem_total = torch.cuda.get_device_properties(0).total_memory / 1024**3 if device.type == "cuda" else 0
+
+    print()
+    print("=" * 62)
+    print("  NanoLLM — Training Run")
+    print("=" * 62)
+    print(f"  Device          : {device} ({gpu_name})")
+    print(f"  GPU Memory      : {gpu_mem_total:.1f} GB")
+    print(f"  Parameters      : {n_params:,}  (~{n_params/1e6:.1f}M)")
+    print(f"  Vocab size      : {mcfg.vocab_size:,}")
+    print(f"  Context length  : {mcfg.max_seq_len}")
+    print(f"  Layers / Heads  : {mcfg.num_layers}L / {mcfg.num_heads}H  (d={mcfg.embed_dim})")
+    print(f"  Precision       : {'bf16' if tcfg.use_bf16 else 'fp32'}")
+    print("-" * 62)
+    print(f"  Micro-batch     : {tcfg.batch_size}")
+    print(f"  Grad accum      : {tcfg.grad_accum_steps}")
+    print(f"  Effective batch : {effective_batch}")
+    print(f"  Tokens / step   : {tokens_per_step:,}")
+    print(f"  Total steps     : {tcfg.max_steps:,}")
+    print(f"  LR              : {tcfg.learning_rate}  (warmup {tcfg.warmup_steps} steps)")
+    print(f"  Weight decay    : {tcfg.weight_decay}")
+    print(f"  Grad clip       : {tcfg.grad_clip}")
+    print("-" * 62)
+    print(f"  Eval every      : {tcfg.eval_interval} steps")
+    print(f"  Save every      : {tcfg.save_interval} steps")
+    print(f"  Log every       : {tcfg.log_interval} steps")
+    print("=" * 62)
+    print()
+
     # ── Training loop ─────────────────────────────────────────────────────────
     model.train()
     step = 0
     optimizer.zero_grad()
+    train_start = time.time()
     t0 = time.time()
-
-    print(f"[train] Starting training for {tcfg.max_steps} steps...")
-    print(f"[train] Effective batch size: {tcfg.batch_size * tcfg.grad_accum_steps}")
 
     while step < tcfg.max_steps:
 
@@ -138,32 +193,80 @@ def main():
             t1 = time.time()
             dt = (t1 - t0) / tcfg.log_interval
             t0 = t1
-            print(f"[step {step:>6}] loss={accum_loss:.4f}  lr={current_lr:.2e}  {dt*1000:.1f}ms/step")
-            log_to_jsonl(log_path, {"step": step, "train_loss": accum_loss, "lr": current_lr})
+
+            elapsed = t1 - train_start
+            remaining = dt * (tcfg.max_steps - step)
+            toks_per_sec = tokens_per_step / dt if dt > 0 else 0
+            progress_pct = step / tcfg.max_steps * 100
+
+            alloc_mb, reserv_mb = get_gpu_mem_mb()
+
+            print(
+                f"  step {step:>6}/{tcfg.max_steps}"
+                f"  ({progress_pct:4.1f}%)"
+                f"  │ loss {accum_loss:.4f}"
+                f"  │ lr {current_lr:.2e}"
+                f"  │ {dt*1000:.0f}ms/step"
+                f"  │ {toks_per_sec/1000:.1f}k tok/s"
+                f"  │ GPU {alloc_mb:.0f}/{gpu_mem_total*1024:.0f}MB"
+                f"  │ elapsed {format_time(elapsed)}"
+                f"  │ ETA {format_time(remaining)}"
+            )
+            log_to_jsonl(log_path, {
+                "step": step, "train_loss": accum_loss, "lr": current_lr,
+                "ms_per_step": dt * 1000, "tokens_per_sec": toks_per_sec,
+                "gpu_alloc_mb": alloc_mb,
+            })
 
         # ── Evaluation ────────────────────────────────────────────────────────
         if step % tcfg.eval_interval == 0:
             val_loss = evaluate(model, val_loader, device)
             val_losses.append(val_loss)
-            print(f"\n{'='*60}")
-            print(f"  Step {step} | Val Loss: {val_loss:.4f} | Perplexity: {torch.exp(torch.tensor(val_loss)):.2f}")
+            ppl = torch.exp(torch.tensor(val_loss)).item()
             sample = generate_sample(model, device)
-            print(f"  Sample: {sample[:200]}")
-            print(f"{'='*60}\n")
-            log_to_jsonl(log_path, {"step": step, "val_loss": val_loss})
+
+            print()
+            print(f"  ┌{'─' * 58}┐")
+            print(f"  │  EVAL @ step {step:<6}                                    │")
+            print(f"  │  Val Loss : {val_loss:.4f}   Perplexity : {ppl:<10.2f}          │")
+            print(f"  ├{'─' * 58}┤")
+            print(f"  │  Sample: {sample[:46]:<48}│")
+            # Print remaining sample in wrapped lines if needed
+            remaining_text = sample[46:200]
+            while remaining_text:
+                chunk = remaining_text[:48]
+                remaining_text = remaining_text[48:]
+                print(f"  │          {chunk:<48}│")
+            print(f"  └{'─' * 58}┘")
+            print()
+
+            log_to_jsonl(log_path, {"step": step, "val_loss": val_loss, "perplexity": ppl})
 
         # ── Checkpoint ────────────────────────────────────────────────────────
         if step % tcfg.save_interval == 0:
             save_checkpoint(model, optimizer, step, accum_loss, tcfg)
 
     # ── Save final checkpoint and loss curve ──────────────────────────────────
+    total_time = time.time() - train_start
     save_checkpoint(model, optimizer, step, accum_loss, tcfg)
     plot_loss_curve(
         train_losses, val_losses, logged_steps,
         save_path=os.path.join(tcfg.log_dir, "loss_curve.png")
     )
-    print(f"\n[train] Done! Final val loss: {val_losses[-1]:.4f}")
+
+    print()
+    print("=" * 62)
+    print("  Training Complete!")
+    print("=" * 62)
+    print(f"  Total time      : {format_time(total_time)}")
+    print(f"  Final val loss  : {val_losses[-1]:.4f}")
+    print(f"  Final perplexity: {torch.exp(torch.tensor(val_losses[-1])):.2f}")
+    print(f"  Steps completed : {step:,}")
+    print(f"  Tokens processed: {step * tokens_per_step:,}")
+    print("=" * 62)
+    print()
 
 
 if __name__ == "__main__":
     main()
+
