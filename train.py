@@ -11,6 +11,8 @@
 #   - Evaluation: val loss + sample generation every eval_interval steps
 
 import os
+import re
+import json
 import time
 import torch
 from config import model_config as mcfg, train_config as tcfg
@@ -40,6 +42,43 @@ def get_gpu_mem_mb() -> tuple[float, float]:
         reserv = torch.cuda.memory_reserved(0) / 1024**2
         return alloc, reserv
     return 0.0, 0.0
+
+
+def find_latest_checkpoint(checkpoint_dir: str) -> str | None:
+    """Find the most recent checkpoint file by step number."""
+    if not os.path.exists(checkpoint_dir):
+        return None
+    ckpts = [f for f in os.listdir(checkpoint_dir) if f.startswith("ckpt_step") and f.endswith(".pt")]
+    if not ckpts:
+        return None
+    # Extract step numbers and find the max
+    def step_num(fname):
+        m = re.search(r"ckpt_step(\d+)", fname)
+        return int(m.group(1)) if m else 0
+    latest = max(ckpts, key=step_num)
+    return os.path.join(checkpoint_dir, latest)
+
+
+def load_loss_history(log_path: str, up_to_step: int):
+    """Reload train/val losses from the JSONL log for loss curve continuity."""
+    train_losses, val_losses, logged_steps = [], [], []
+    if not os.path.exists(log_path):
+        return train_losses, val_losses, logged_steps
+    with open(log_path, "r") as f:
+        for line in f:
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            s = rec.get("step", 0)
+            if s > up_to_step:
+                continue
+            if "train_loss" in rec:
+                train_losses.append(rec["train_loss"])
+                logged_steps.append(s)
+            if "val_loss" in rec:
+                val_losses.append(rec["val_loss"])
+    return train_losses, val_losses, logged_steps
 
 
 def evaluate(model, val_loader, device, max_batches=50):
@@ -102,6 +141,19 @@ def main():
     ]
     optimizer = torch.optim.AdamW(optim_groups, lr=tcfg.learning_rate, betas=(0.9, 0.95), fused=True)
 
+    # ── Resume from checkpoint (if available) ─────────────────────────────────
+    resume_step = 0
+    ckpt_path = find_latest_checkpoint(tcfg.checkpoint_dir)
+    if ckpt_path:
+        ckpt = torch.load(ckpt_path, map_location=device, weights_only=True)
+        model.load_state_dict(ckpt["model_state"])
+        optimizer.load_state_dict(ckpt["optimizer_state"])
+        resume_step = ckpt["step"]
+        print(f"  ✓ Resuming from checkpoint: {os.path.basename(ckpt_path)} (step {resume_step})")
+        del ckpt  # Free memory
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
+
     # ── Data ──────────────────────────────────────────────────────────────────
     train_loader, val_loader = get_dataloaders()
     train_iter = iter(train_loader)
@@ -109,7 +161,13 @@ def main():
     # ── Logging setup ─────────────────────────────────────────────────────────
     os.makedirs(tcfg.log_dir, exist_ok=True)
     log_path = os.path.join(tcfg.log_dir, "train_log.jsonl")
-    train_losses, val_losses, logged_steps = [], [], []
+
+    # Reload prior loss history for complete loss curve
+    if resume_step > 0:
+        train_losses, val_losses, logged_steps = load_loss_history(log_path, resume_step)
+        print(f"  ✓ Loaded {len(train_losses)} train / {len(val_losses)} val loss records from log")
+    else:
+        train_losses, val_losses, logged_steps = [], [], []
 
     # ── Derived constants ─────────────────────────────────────────────────────
     effective_batch = tcfg.batch_size * tcfg.grad_accum_steps
@@ -143,12 +201,15 @@ def main():
     print(f"  Eval every      : {tcfg.eval_interval} steps")
     print(f"  Save every      : {tcfg.save_interval} steps")
     print(f"  Log every       : {tcfg.log_interval} steps")
+    if resume_step > 0:
+        print(f"  Resuming from   : step {resume_step}")
+        print(f"  Remaining steps : {tcfg.max_steps - resume_step:,}")
     print("=" * 62)
     print()
 
     # ── Training loop ─────────────────────────────────────────────────────────
     model.train()
-    step = 0
+    step = resume_step
     optimizer.zero_grad()
     train_start = time.time()
     t0 = time.time()

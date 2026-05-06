@@ -23,8 +23,8 @@ class TrainConfig:
     data_cache_dir: str = "./data_cache"
 
     # Training
-    batch_size: int = 8             # Per-GPU micro-batch size (reduced for 8 GB VRAM)
-    grad_accum_steps: int = 32      # Effective batch = batch_size * grad_accum_steps = 256
+    batch_size: int = 32            # Per-GPU micro-batch size (tuned for 8 GB VRAM)
+    grad_accum_steps: int = 8       # Effective batch = batch_size * grad_accum_steps = 256
     max_steps: int = 20000          # Total optimizer steps (~2–3 hours on 4060 Ti)
     warmup_steps: int = 500
     learning_rate: float = 3e-4
