@@ -38,8 +38,8 @@ class TrainConfig:
     use_bf16: bool = True           # bf16 is more stable than fp16 on Ampere+ GPUs
 
     # Paths
-    checkpoint_dir: str = "./checkpoints"
-    log_dir: str = "./logs"
+    checkpoint_dir: str = "./Training_Results/checkpoints"
+    log_dir: str = "./Training_Results/logs"
 
     # Generation (for eval during training)
     gen_prompt: str = "Once upon a time"

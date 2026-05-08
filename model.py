@@ -136,7 +136,7 @@ class TransformerBlock(nn.Module):
 
 # ─── Full Language Model ─────────────────────────────────────────────────────
 
-class MiniLLM(nn.Module):
+class NanoLLM(nn.Module):
     """Decoder-only transformer language model.
     Architecture: Token Embed → N x TransformerBlock → RMSNorm → LM Head
     Weight tying: token embedding and LM head share the same weights.

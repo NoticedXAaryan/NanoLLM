@@ -55,8 +55,9 @@ def load_checkpoint(model, optimizer, path: str, device: torch.device):
 
 def plot_loss_curve(train_losses: list, val_losses: list, steps: list, save_path: str):
     """Save a clean loss curve plot to disk."""
-    plt.figure(figsize=(10, 5))
-    plt.plot(steps, train_losses, label="Train Loss", linewidth=2, color="#4C72B0")
+    plt.figure(figsize=(10, 6))
+    plt.title("NanoLLM Training Loss")
+    plt.plot(steps, train_losses, label="Train Loss", alpha=0.3, color="#4C72B0")
     if val_losses:
         val_steps = [s for i, s in enumerate(steps) if i < len(val_losses)]
         plt.plot(val_steps[:len(val_losses)], val_losses,

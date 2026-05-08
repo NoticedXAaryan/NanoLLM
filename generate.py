@@ -11,7 +11,7 @@
 import argparse
 import torch
 from config import model_config as mcfg
-from model import MiniLLM
+from model import NanoLLM
 from tokenizer import get_tokenizer, encode, decode
 
 
@@ -32,7 +32,7 @@ def main():
     mcfg.vocab_size = tok.vocab_size
 
     # Load model
-    model = MiniLLM(mcfg).to(device)
+    model = NanoLLM(mcfg).to(device)
     ckpt = torch.load(args.checkpoint, map_location=device)
     model.load_state_dict(ckpt["model_state"])
     model.eval()
@@ -43,7 +43,7 @@ def main():
     idx = torch.tensor([prompt_ids], dtype=torch.long, device=device)
 
     # Generate
-    print(f"Prompt: {args.prompt}\n{'─'*50}")
+    print(f"Prompt: {args.prompt}\n{'-'*50}")
     for i in range(args.num_samples):
         out = model.generate(
             idx.clone(),
@@ -52,7 +52,7 @@ def main():
             top_k=args.top_k
         )
         text = decode(out[0].tolist())
-        print(f"\n[Sample {i+1}]\n{text}\n{'─'*50}")
+        print(f"\n[Sample {i+1}]\n{text}\n{'-'*50}")
 
 
 if __name__ == "__main__":

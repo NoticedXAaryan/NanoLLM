@@ -1,5 +1,5 @@
 # train.py
-# Main training loop for MiniLLM.
+# Main training loop for NanoLLM.
 #
 # Run with:  python train.py
 #
@@ -16,7 +16,7 @@ import json
 import time
 import torch
 from config import model_config as mcfg, train_config as tcfg
-from model import MiniLLM
+from model import NanoLLM
 from data import get_dataloaders
 from tokenizer import get_tokenizer, encode, decode
 from utils import cosine_lr_with_warmup, save_checkpoint, plot_loss_curve, log_to_jsonl
@@ -128,7 +128,7 @@ def main():
     mcfg.vocab_size = tok.vocab_size
 
     # ── Build model ───────────────────────────────────────────────────────────
-    model = MiniLLM(mcfg).to(device)
+    model = NanoLLM(mcfg).to(device)
     n_params = model.count_parameters()
 
     # ── Optimizer ─────────────────────────────────────────────────────────────
