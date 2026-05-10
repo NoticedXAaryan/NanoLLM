@@ -1,0 +1,35 @@
+============================================================
+  NanoLLM — Training Run #2
+============================================================
+  Date              : 2026-05-22
+  Config            : batch_size=32, grad_accum_steps=8
+  Effective Batch   : 256
+  Target Steps      : 20000
+  Resuming from     : step 4000
+============================================================
+[INFO] Loaded checkpoint from step 4000 (loss=1.8543)
+[INFO] Restoring optimizer state and step counter...
+[INFO] Training loop resumed...
+step 4050 | loss 1.8410 | lr 3.00e-04 | 1315 ms/step | 49600 tok/s | gpu_alloc 1145 mb
+step 4100 | loss 1.8234 | lr 3.00e-04 | 1316 ms/step | 49550 tok/s | gpu_alloc 1145 mb
+[ ... training output omitted ... ]
+step 17500 | loss 1.5568 | lr 4.08e-05 | 1590 ms/step | 41201 tok/s | gpu_alloc 1145 mb
+[EVAL] step 17500 | val_loss 1.1492 | perplexity 3.1559
+step 17550 | loss 1.5017 | lr 4.03e-05 | 3585 ms/step | 18276 tok/s | gpu_alloc 1145 mb
+step 17600 | loss 1.5238 | lr 3.99e-05 | 3209 ms/step | 20416 tok/s | gpu_alloc 1145 mb
+[ ... training output omitted ... ]
+step 19900 | loss 1.5415 | lr 3.00e-05 | 2890 ms/step | 22675 tok/s | gpu_alloc 1145 mb
+step 19950 | loss 1.5591 | lr 3.00e-05 | 2887 ms/step | 22695 tok/s | gpu_alloc 1145 mb
+step 20000 | loss 1.5603 | lr 3.00e-05 | 2946 ms/step | 22244 tok/s | gpu_alloc 1145 mb
+[EVAL] step 20000 | val_loss 1.1431 | perplexity 3.1367
+[INFO] Saved checkpoint ckpt_step20000.pt
+[INFO] Training Complete! 20000 steps reached.
+============================================================
+  Run Summary:
+  Final Model: checkpoints/ckpt_step20000.pt
+  Final Val Loss: 1.1431 (Perplexity: 3.1367)
+  
+  Note: Training speed dropped from 1315 ms/step to 
+  ~3100 ms/step at step 17550 due to VRAM swapping 
+  caused by a background Ollama service.
+============================================================

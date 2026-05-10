@@ -1,0 +1,29 @@
+============================================================
+  NanoLLM — Training Run #1
+============================================================
+  Date              : 2026-05-22
+  Config            : batch_size=8, grad_accum_steps=32
+  Effective batch   : 256
+  Stopped at        : step 5000 (Ctrl+C)
+  Duration          : ~2h 28m
+  Reason stopped    : Switching to batch_size=32 for ~4x speedup
+============================================================
+
+--- Terminal Output (last visible steps) ---
+
+  step   4650/20000  (23.2%)  │ loss 1.7014  │ lr 2.71e-04  │ 1463ms/step  │ 44.8k tok/s  │ GPU 557/8188MB  │ elapsed 2h 20m 2s  │ ETA 6h 14m 15s
+  step   4700/20000  (23.5%)  │ loss 1.7115  │ lr 2.70e-04  │ 1466ms/step  │ 44.7k tok/s  │ GPU 557/8188MB  │ elapsed 2h 21m 15s  │ ETA 6h 13m 42s
+  step   4750/20000  (23.8%)  │ loss 1.7166  │ lr 2.70e-04  │ 1468ms/step  │ 44.6k tok/s  │ GPU 557/8188MB  │ elapsed 2h 22m 29s  │ ETA 6h 13m 12s
+  step   4800/20000  (24.0%)  │ loss 1.7103  │ lr 2.69e-04  │ 1438ms/step  │ 45.6k tok/s  │ GPU 557/8188MB  │ elapsed 2h 23m 41s  │ ETA 6h 4m 17s
+  step   4850/20000  (24.2%)  │ loss 1.6896  │ lr 2.68e-04  │ 1454ms/step  │ 45.1k tok/s  │ GPU 557/8188MB  │ elapsed 2h 24m 53s  │ ETA 6h 7m 3s
+  step   4900/20000  (24.5%)  │ loss 1.6837  │ lr 2.67e-04  │ 1438ms/step  │ 45.6k tok/s  │ GPU 557/8188MB  │ elapsed 2h 26m 5s  │ ETA 6h 1m 59s
+  step   4950/20000  (24.8%)  │ loss 1.7123  │ lr 2.67e-04  │ 1447ms/step  │ 45.3k tok/s  │ GPU 557/8188MB  │ elapsed 2h 27m 18s  │ ETA 6h 3m 3s
+  step   5000/20000  (25.0%)  │ loss 1.7140  │ lr 2.66e-04  │ 1455ms/step  │ 45.0k tok/s  │ GPU 557/8188MB  │ elapsed 2h 28m 30s  │ ETA 6h 3m 50s
+
+--- Stopped via Ctrl+C ---
+
+--- Notes ---
+- Last saved checkpoint: ckpt_step4000.pt (save_interval=2000)
+- Steps 4001-5000 were lost (no checkpoint at step 5000)
+- Full structured log available at: ./logs/train_log.jsonl
+- Resuming with batch_size=32, grad_accum_steps=8 from step 4000
