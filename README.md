@@ -1,112 +1,97 @@
-# 🧠 NanoLLM
+<div align="center">
 
-NanoLLM is a from-scratch, educational implementation of a ~30M parameter language model. Rather than cloning older architectures like GPT-2, NanoLLM is built with the same modern architectural choices powering today's state-of-the-art models (like LLaMA 3 and Mistral), including RoPE, RMSNorm, and SwiGLU activations. It is designed to be highly readable, fully reproducible, and optimized to train efficiently on a single consumer GPU (8GB VRAM).
+# 🌌 NanoLLM
 
----
+**A From-Scratch, 12M Parameter Large Language Model Built on Modern Architecture.**
 
-## ✨ Architecture
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](#)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)](#)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat&logo=opensourceinitiative&logoColor=white)](#)
+[![Architecture](https://img.shields.io/badge/Architecture-LLaMA--Style-blueviolet?style=flat)](#)
 
-This is **not** a GPT-2 clone. NanoLLM uses the same architectural improvements found in LLaMA, Mistral, and Gemma:
+*NanoLLM is not just a codebase—it's a masterclass in building modern AI from the ground up.*
 
-| Component | Choice | Why |
-|---|---|---|
-| Positional Embedding | **RoPE** | Relative, generalizes to longer sequences |
-| Normalization | **RMSNorm** | Simpler, faster than LayerNorm |
-| Activation | **SwiGLU** | Better gradient flow than GELU |
-| Attention | **Causal multi-head** with Flash Attention | Efficient O(n) memory |
-| Weight tying | Embed ↔ LM head | Fewer params, better training |
-
-### Model Size
-
-| Hyperparameter | Value |
-|---|---|
-| Parameters | ~30M |
-| Layers | 6 |
-| Attention heads | 6 |
-| Embedding dim | 384 |
-| Context length | 256 tokens |
-| Vocabulary | 50,257 (GPT-2 BPE) |
+</div>
 
 ---
 
-## 📊 Training
+> [!NOTE]
+> **Who is this for?**
+> If you've ever wanted to understand how a Large Language Model actually works under the hood, but found research papers too dense and standard tutorials too outdated, you are in the right place. This repo walks you from total beginner to understanding the exact math behind LLaMA 3.
 
-- **Dataset:** [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories) — 2.1M short stories
-- **Hardware:** NVIDIA RTX 4060 Ti 8GB
-- **Precision:** bf16 mixed precision
-- **Effective batch size:** 256 (64 × 4 grad accum steps)
-- **LR schedule:** Cosine decay with warmup
-- **Steps:** 20,000 (~2–3 hours)
+## 🚀 What is NanoLLM?
 
-![Loss Curve](logs/loss_curve.png)
+NanoLLM is a custom-built, 12.6 million parameter language model. It was trained entirely from scratch on a single laptop GPU (RTX 4060 Ti 8GB) using the **TinyStories** dataset.
+
+Instead of copying old 2019 GPT-2 tutorials, NanoLLM uses the exact architectural blueprints powering today's state-of-the-art open-source models:
+- **RoPE** (Rotary Position Embeddings)
+- **SwiGLU** (Feed-Forward Activations)
+- **RMSNorm** (Root Mean Square Normalization)
+- **Weight Tying** (Memory optimization)
+
+## 🏗️ Project Architecture
+
+```mermaid
+mindmap
+  root((NanoLLM))
+    Backend
+      Python / PyTorch
+        Matrix Multiplication
+        Backpropagation
+      Model Architecture
+        RoPE Embeddings
+        SwiGLU Activations
+        RMSNorm
+    Data Pipeline
+      HuggingFace
+        TinyStories Dataset
+      Tokenizer
+        BPE (Byte-Pair Encoding)
+    Documentation
+      The Basics
+      The Math
+      The Hardware Limits
+```
 
 ---
 
-## 🚀 Quickstart
+## 🚦 Quick Start
 
-### 1. Install dependencies
+**1. Clone and install dependencies:**
 ```bash
+git clone https://github.com/noticedXAaryan/NanoLLM.git
+cd NanoLLM
 pip install -r requirements.txt
 ```
 
-### 2. Train
+**2. Talk to the model:**
+```bash
+python generate.py
+```
+> *Note: NanoLLM was trained on TinyStories. It speaks in the vocabulary of a 4-year-old child and excels at short, creative fairy tales!*
+
+**3. Train it yourself:**
 ```bash
 python train.py
 ```
-Data is downloaded and tokenized automatically on first run.
-
-### 3. Generate text
-```bash
-python generate.py \
-  --checkpoint checkpoints/ckpt_step20000.pt \
-  --prompt "Once upon a time there was a little girl" \
-  --max_new_tokens 200
-```
 
 ---
 
-## 📝 Sample Outputs
+## 📚 The Rabbit Hole Curriculum
 
-After ~20,000 steps, the model generates coherent short stories:
+This documentation is designed as a **Dual-Layered Book**. 
+Read the main body for a quick, high-level understanding. Expand the `🔬 Deep Dive` sections if you want the hardcore math, edge-cases, and textbook explanations.
 
-```
-Prompt: Once upon a time
-
-Once upon a time, there was a little rabbit named Benny who lived in a
-cozy burrow under an old oak tree. One day, Benny found a shiny red
-apple near the meadow. He wanted to bring it home for his mother, but
-it was very heavy. He pushed and pushed until finally...
-```
-
----
-
-## 📁 Project Structure
-
-```
-NanoLLM/
-├── config.py       # All hyperparameters in one place
-├── model.py        # LLaMA-style transformer architecture
-├── data.py         # TinyStories download + tokenization
-├── train.py        # Training loop
-├── generate.py     # Text generation script
-├── tokenizer.py    # GPT-2 BPE tokenizer wrapper
-├── utils.py        # LR schedule, checkpointing, plotting
-└── README.md
-```
+| Chapter | Description | What You'll Learn |
+|---------|-------------|-------------------|
+| **[00. The Absolute Basics](docs/00_the_absolute_basics.md)** | Start here. From zero to neural networks. | Matrices, Tensors, Backpropagation, Chain Rule. |
+| **[01. Architecture Explained](docs/01_architecture_explained.md)** | The blueprint of NanoLLM vs GPT-2. | RoPE math, SwiGLU intuition, Attention mechanisms. |
+| **[02. The Training Journey](docs/02_the_training_journey.md)** | Surviving hardware limits. | VRAM swapping, Gradient Accumulation sequences. |
+| **[03. Build It Yourself](docs/03_build_it_yourself.md)** | Line-by-line code breakdowns. | AdamW optimizers, `loss.backward()`, handling `NaN` loss. |
 
 ---
 
-## 🧪 Key Training Details
-
-- **bf16 mixed precision** — fits larger batches in 8GB VRAM without quality loss
-- **Gradient accumulation** — simulates 256-sample batches using 64-sample physical batches
-- **Cosine LR with warmup** — standard schedule for LLM pre-training
-- **Gradient clipping (norm=1.0)** — prevents training instability
-- **Decoupled weight decay** (no decay on biases/norms) — AdamW best practice
-- **Residual projection scaling** — output projections initialized to `1/sqrt(2*layers)` for stable deep network training
-
----
-
-## 📜 License
-
-MIT — use freely, credit appreciated.
+<div align="center">
+  <p><strong>Created by <a href="https://www.linkedin.com/in/noticedxaaryan">Aaryan</a></strong></p>
+  <p><em>"Any fool can write code that a computer can understand. Good programmers write code that humans can understand." — Martin Fowler</em></p>
+</div>
