@@ -17,7 +17,7 @@ from tokenizer import get_tokenizer, encode, decode
 
 def main():
     parser = argparse.ArgumentParser(description="Generate text from NanoLLM checkpoint")
-    parser.add_argument("--checkpoint", type=str, required=True,  help="Path to .pt checkpoint file")
+    parser.add_argument("--checkpoint", type=str, help="Path to .pt checkpoint file")
     parser.add_argument("--prompt",     type=str, default="Once upon a time")
     parser.add_argument("--max_new_tokens", type=int, default=200)
     parser.add_argument("--temperature",    type=float, default=0.8)
@@ -31,12 +31,39 @@ def main():
     tok = get_tokenizer()
     mcfg.vocab_size = tok.vocab_size
 
-    # Load model
+    # Look for the lightweight standalone model first
+    default_standalone_ckpt = os.path.join("models", "NanoLLM_20k_weights.pt")
+    default_training_ckpt = os.path.join("Training_Results", "checkpoints", "ckpt_step20000.pt")
+    
+    if args.checkpoint:
+        ckpt_path = args.checkpoint
+    elif os.path.exists(default_standalone_ckpt):
+        ckpt_path = default_standalone_ckpt
+    elif os.path.exists(default_training_ckpt):
+        ckpt_path = default_training_ckpt
+    else:
+        print(f"Error: Could not find checkpoint. Please specify with --checkpoint")
+        return
+
+    print(f"Loading model from {ckpt_path}...")
+    checkpoint = torch.load(ckpt_path, map_location=device)
+    
+    # Handle both standalone weights and training checkpoints
+    if 'model_state' in checkpoint:
+        model_weights = checkpoint['model_state']
+    else:
+        model_weights = checkpoint # Standalone weights are saved directly
+        
+    # Remove the '_orig_mod.' prefix if it exists
+    unwanted_prefix = '_orig_mod.'
+    for k,v in list(model_weights.items()):
+        if k.startswith(unwanted_prefix):
+            model_weights[k[len(unwanted_prefix):]] = model_weights.pop(k)
+
+    # Initialize model
     model = NanoLLM(mcfg).to(device)
-    ckpt = torch.load(args.checkpoint, map_location=device)
-    model.load_state_dict(ckpt["model_state"])
+    model.load_state_dict(model_weights, strict=False)
     model.eval()
-    print(f"Loaded checkpoint from step {ckpt['step']}  (loss={ckpt['loss']:.4f})\n")
 
     # Encode prompt
     prompt_ids = encode(args.prompt)
