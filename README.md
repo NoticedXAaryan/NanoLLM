@@ -88,6 +88,7 @@ Read the main body for a quick, high-level understanding. Expand the `🔬 Deep 
 | **[01. Architecture Explained](docs/01_architecture_explained.md)** | The blueprint of NanoLLM vs GPT-2. | RoPE math, SwiGLU intuition, Attention mechanisms. |
 | **[02. The Training Journey](docs/02_the_training_journey.md)** | Surviving hardware limits. | VRAM swapping, Gradient Accumulation sequences. |
 | **[03. Build It Yourself](docs/03_build_it_yourself.md)** | Line-by-line code breakdowns. | AdamW optimizers, `loss.backward()`, handling `NaN` loss. |
+| **[04. Model Behavior & Inference](docs/04_model_behavior.md)** | How to drive the engine. | Context length extrapolation, repetition loops, temperature. |
 
 ---
 

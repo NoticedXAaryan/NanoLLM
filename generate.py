@@ -8,6 +8,7 @@
 #                      --temperature 0.8 \
 #                      --top_k 40
 
+import os
 import argparse
 import torch
 from config import model_config as mcfg
