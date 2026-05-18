@@ -70,6 +70,12 @@ python generate.py
 ```
 > *Note: NanoLLM was trained on TinyStories. It speaks in the vocabulary of a 4-year-old child and excels at short, creative fairy tales!*
 
+**Example Real Output:**
+- **Prompt:** `"Once upon a time, there was a little girl named Lily."`
+- **Context Length:** `100 Tokens`
+- **Exact Output:** 
+> *"Once upon a time, there was a little girl named Lily. She lived in a house with her mommy and daddy was very important. Lily loved to play with her daddy, but she had a big brother. One day, daddy took her two weeks later they decided to visit her mommy, daddy, Timmy and Lily loved her little brother, who had to visit her mommy wanted to go outside to the house for a visit her older and his big brother wanted her. When he was their couch. They played"*
+
 **3. Train it yourself:**
 ```bash
 python train.py
