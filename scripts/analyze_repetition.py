@@ -4,48 +4,36 @@ import re
 
 plt.style.use('dark_background')
 
+stops = [100, 200, 250, 500, 750, 1000, 2500, 5000]
+
 def analyze_file(filepath):
-    # Read the file
-    with open(filepath, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # Extract just Sample 1
-    sample = content.split('[Sample 1]')[1].split('[Sample 2]')[0]
-    
-    # Get words
-    words = re.findall(r'\b\w+\b', sample.lower())
-    
-    # Calculate cumulative unique words
-    unique_words = set()
-    cumulative_unique = []
-    for i, word in enumerate(words):
-        unique_words.add(word)
-        cumulative_unique.append(len(unique_words))
-        
-    return list(range(len(words))), cumulative_unique
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        sample = content.split('[Sample 1]')[1].split('[Sample 2]')[0]
+        words = re.findall(r'\b\w+\b', sample.lower())
+        unique_words = set()
+        cumulative_unique = []
+        for i, word in enumerate(words):
+            unique_words.add(word)
+            cumulative_unique.append(len(unique_words))
+        return list(range(len(words))), cumulative_unique
+    except Exception as e:
+        print(f"Failed to load {filepath}: {e}")
+        return [], []
 
-# Analyze the three files
-x_100, y_100 = analyze_file('scratch/out_100.txt')
-x_1000, y_1000 = analyze_file('scratch/out_1000.txt')
-
-# We'll also analyze the 5000 one, but it might be broken. Let's try.
-try:
-    x_5000, y_5000 = analyze_file('scratch/out_5000.txt')
-except Exception as e:
-    x_5000, y_5000 = [], []
-    print(f"Failed to load 5000: {e}")
-
-# Plotting
-fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
+fig, ax = plt.subplots(figsize=(12, 7), dpi=300)
 fig.patch.set_facecolor('#0d1117')
 ax.set_facecolor('#0d1117')
 
-ax.plot(x_100, y_100, label='100 Tokens (Coherent)', color='#3fb950', linewidth=2.5)
-ax.plot(x_1000, y_1000, label='1,000 Tokens (Repetition Loop)', color='#d29922', linewidth=2.5)
-if x_5000:
-    ax.plot(x_5000, y_5000, label='5,000 Tokens (Context Collapse)', color='#f85149', linewidth=2.5)
+colors = ['#3fb950', '#2ea043', '#8957e5', '#a371f7', '#d29922', '#e3b341', '#f85149', '#ff7b72']
 
-ax.set_title('Attention Decay: Cumulative Unique Words over Sequence Length', color='white', pad=20, fontsize=14, fontweight='bold')
+for idx, tokens in enumerate(stops):
+    x, y = analyze_file(f'scratch/outputs/out_{tokens}.txt')
+    if x:
+        ax.plot(x, y, label=f'{tokens} Tokens', color=colors[idx % len(colors)], linewidth=2)
+
+ax.set_title('Attention Decay: Cumulative Unique Words over 8 Data Points', color='white', pad=20, fontsize=14, fontweight='bold')
 ax.set_xlabel('Words Generated', color='#8b949e', fontsize=12)
 ax.set_ylabel('Total Unique Words Used', color='#8b949e', fontsize=12)
 
