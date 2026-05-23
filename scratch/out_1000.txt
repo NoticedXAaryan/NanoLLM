@@ -1,0 +1,249 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: A brave knight went into the dark cave.
+--------------------------------------------------
+
+[Sample 1]
+A brave knight went into the dark cave. He saw a big dragon. The knight was trying to save the dragon. The knight was very brave knight had to fight the dragon wanted to save the knight. He was a hero. But the knight had a sword. He was so big kids! He fought the knight had a brave knight and he fought the dragon. He fought really bad knight fought the dragon and the dragon was the knight fought the knight fought the dragon brave knight. The knight fought the knight was so the brave knight. The knight won the knight. In the knight defeated the dragon defeated the dragon defeated the knight and said, safe and saved the dragon saved the knight with the knight and the knight won the dragon. In the knight defeated the knight made the dragon got out of the knight and the knight. The knight saved the knight and the knight and the knight and the dragon was very brave knight and the knight saved the knight and the knight and the knight and saved him.Once upon a dragon. The knight and the knight saved the knight, and the knight fought the knight and saved the knight won the dragon. The knight and the knight. The knight had no dragon was the knight and the dragon and the knight from the knight and the knight. The dragon was saved the knight saved the knight and the knight. The knight and the knight and the knight and the knight ran away!Once upon a knight and the knight and the knight!Once upon a boy who protected the knight said thank you are all the knight saved the knight had a knight and the brave knight!Once upon a beautiful knight was very brave knight and the knight and the knight was very special story. The knight and the knight was heroes were a knight. They went on a hero! The knight lived happily set off the knight were very happy. The knight. The knight was very important job to protect the knight was very proud of the knight. They lived happily ever since it was also wore a beautiful kingdom was very happy that the knight had a hero. They lived happily. They were the kingdom was always very happy and they were always happy and all the knight. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+One day when they lived a knight lived happily lived happily ever since they were a happy and the knight and the knight and the knight and happy and everyone was always happy and the knight. They were the knight who lived. They lived happily ever since they were able to their kingdom was always looked after that their kingdom was very proud and the kingdom lived with the knight. Everyone in the knight and people who had lots of each day. The knight and they lived happily ever since they had a very happy and they lived in the knight and everyone around and the knight. The knight.
+
+
+
+
+
+
+
+
+
+They had to live a very happy and they were both of the people who was always remembered that they lived in their kingdom.One day after that even married.Once there was always made people who had been married with their lives in their hearts - they lived happily ever since they lived happily ever since the people with their lives far away, and everyone in the village was full of joy and everyone who lived happily ever since that is together.One day that they lived happily ever since they had each other people who they were always loved each other.
+
+
+
+
+
+
+
+
+The end.Once upon a young husband and the King and everyone was always made them lived happily ever after that day. 
+
+One day. All the king and he lived with their lives in their lives far away from then lived in a young boy and their marriage was a family.
+
+One day, but the King, their marriage and everyone in the people in the people who was a young boy and their old man and they were often asked their marriage.
+
+
+
+
+
+
+
+
+
+The people were given a little girl. They cared and was excited for the people who was a couple made it was special.
+
+
+One day they were always excitedly. The two days and their lives in their hearts that their own two children were so much better than ever after that day that day.
+
+
+
+
+
+Every day, but the family was the man and their love for them.
+
+One day the children who loved the two people who were very close. They went to beaming so they always loved the couple was a big family lived by their family and they wanted the two children always. They were very big house was never said to their hearts of the family made up to the family, with lots of the family.Once upon a family who loved them, from then and everyone in the family, who shared the people of the marriage. They were so many years old and they made their lives by their marriage would always made sure that made their marriage was special children.
+
+
+ 
+
+
+
+--------------------------------------------------
+
+[Sample 2]
+A brave knight went into the dark cave. He was in a big dragon.
+
+
+He saw the dragon said to save Lily said, "I will help. I will help you, brave knight. I will save meow. Take meow to help you surrender!"
+
+But then bravely, strong dragon was ready to fight the knight and you are the knight."
+
+
+
+The knight thanked the dragon smiled and the dragon said, "Thank you can save someone to fight back. The knight, little knight."
+
+
+The knight fought the knight and the dragon fought brave knight fought back to a knight.
+The knight fought and Lily said, "I am the knight! I will get to the dragon and I will save the princess, to the knight!"
+The knight fought back to fight, the knight fought the knight.
+
+The knight fought for being brave knight and the dragon brave knight and the dragon flew away!
+
+The knight saved Lily was the princess and the knight and the dragon was safe and the knight."
+The knight saved the knight ran away from the dragon fought the knight saved the knight and the knight and the knight and they fought the knight was the knight and the knight defeated the knight fought the knight and the knight and the knight and the knight and the knight and the knight.
+
+
+The knight and the knight!
+
+
+The knight and the knight and the knight and the knight saved the knight and the knight saved the knight and the knight had saved the knight and the knight with the knight saved the knight was the knight.
+They lived happily, the knight and the knight and the knight.
+
+
+
+The knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight.
+
+
+
+They played and the knight and the kingdom and the knight and the knight. They were the knight and the knight and the knight and the knight and the knight gave the knight and the kingdom. They were very happily saved the knight and the knight and the knight and the knight. They lived happily lived happily. They were the knight and the knight and the knight. They were happy. They were the knight and the princess and the knight and the knight and the knight and the knight and the knight and the knight and the knight.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tom and the princess was the dragon and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the princess lived happily and the knight and the knight and the knight and the knight and the knight and the knight.
+
+
+
+
+
+
+
+
+The knight and the knight and the knight and the knight and the knight and the princess was a knight and the knight and the knight. They had fun. They had a knight and the knight and the knight and the knight. They had a knight. They had a knight. The story had a knight and the princess.Anna and the knight. They had a knight and the princess. They were friends.Tom and the knight. They were very happy and the knight and the knight who and the knight lived happily ever. They were very important. They were happy and the king and the knight and their adventure. They were the knight. They had a knight and the knight and the princess and the knight. They were the knight. They were very happy. They were very brave and the knight. They were the princess and the knight and the princess lived happily ever. They were friends and the knights and the princess and the knight and the dragon and the knight and the knight and their dreams.Lila and the knight. They lived happily ever.Ben and the knight. The knight and the knight and the knight.Anna and the knight. They were very happy.Lily and the knight was their mom.
+
+
+
+
+
+
+
+
+
+
+
+One day was their mom and the knight and the king and the knight. They were very happy.
+
+
+
+
+
+One day they wanted to the dragon and the knight and the knight and the dragon. The knight and the knight and the knight and their mom and the dragon. The knight was their mom was very happy.
+
+The knight and the knight and the knight and the knight and the princess.
+
+
+
+
+
+
+
+
+
+
+
+
+The end.
+
+
+
+Every day.
+
+
+
+
+
+They were a knight and the dragon.
+
+
+
+One day they had a lot of the knight and the dragon was very important to Lily was a big brother and the dragon was a prince and the knight and the prince and the dragon and the princess and the dragon and the dragon had a girl and the knight was a fairy.
+
+
+The knight and the knight and the dragon liked the knight
+--------------------------------------------------
+
+[Sample 3]
+A brave knight went into the dark cave. He was so brave and he found a knight! He put on armor and asked the knight said he was in front of a knight. The knight said this was the knight said yes. He fought the dragon said he would save the knight and he had a knight, and he was so brave and he was brave and he had a brave and brave knight and he fought the knight. He helped save the knight and the knight won! The knight had a giant and the knight had to fight the dragon and he had to fight the knight. He defeated the knight thanked the knight and saved the brave knight who fought the wizard. The knight was on his horse defeated and the knight saved the knight and he had saved the dragon was saved the knight. 
+
+
+
+
+
+
+
+
+The knight and the knight and the knight thanked the knight and the knight gave the dragon and the knight and the knight and the knight saved their fight. The knight and the knight and the brave knight! The knight and the knight was so brave knight and the knight saved the knight and his dragon. The knight was the knight and the knight and he won the knight and the princess. The knight fought the knight saved the knight. The knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight defeated the knight. The knight. The dragon and the knight was the knight and the knight and the princess and the knight and the knight and the knight and the knight and the knight and the knight hugged the knight.Once upon and the knight and the knight and the knight.Once upon a knight. They were very important thing they both the knight and the knight was very happy and the knight. They were happy day was very happy and the knight and the knight. They were friends and the knight and everyone was the knight. Everyone in the knight and the knight and the knight and the knight went on!" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+They were all of their adventure was a princess and the knight and the knight ran off. They went to the knight and the knight lived happily lived happily ever since they lived happily lived happily ever and the knight and the people of the knight and the knight, and the knight and the knight and the knight and the knight and the princess and the knight and the kingdom was very important. They were the knight and the knight and the knight who lived happily ever after that day, and the knight and the knight was very happy and the knight kept the knight forever. They lived happily ever since they lived happily ever after that day.The knight, they were good people in the knight and the knight.Once upon a young man who lived happily ever since the knight and the knight had a young boy and the knight and the knight and each day was always said special adventure was never stopped when they lived happily ever since they were married. The knight had many years on the boy who was a great-hearted knight and the knight and the princess.Once upon a wonderful life.Once upon a famous knight shared a 3 year old knight always knew that their days were the knight had the people of the knight was very important values to this was a lot of the kingdom.Once upon a very kind and they were the knight. But there was called him was very special. The knight. They were always loved each day they were always ready for life he was very special bond-shaped things they were happy. They would always looking forward to celebrate. 
+
+
+
+
+
+
+
+
+
+
+One day he always wanted to go for a very important life, but one day when they would always ready to make-one day.
+
+The knight had a great-the knight. They were married and the knight who was very important life. They were always together, but was the knight who was so many years ago, to share in the years later, especially when the prince and the knight and they would do you were always happy again.
+
+
+
+
+
+
+
+
+
+One day when they got together. The knight, when the king and the knight and the knight was a little boy was to go on that it was always remembered the knight who was very important.
+
+
+
+
+The boy, and when they were always, and they would often, and the knight and would come together and many people and he would always had a special feeling that he would sometimes even though, but he was not too. They would do all the people who was not even when they worked together.
+
+Their special, and their friendship was always remembered the knight and they were happy and would always had a special, and their special and every time was the King.
+
+
+
+
+The knight and his special and the knight and they were always remembered to stay in a long, because of the knight and
+--------------------------------------------------

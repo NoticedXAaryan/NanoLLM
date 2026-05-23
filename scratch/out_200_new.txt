@@ -1,0 +1,11 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: When the spaceship finally landed on the red planet,
+--------------------------------------------------
+
+[Sample 1]
+When the spaceship finally landed on the red planet, Timmy was so excited to his friends saw that he saw a big tree with the planet.
+
+
+
+Timmy looked at the spaceship from the spaceship was so much bigger and aliens flew back up in the aliens called his spaceship. Timmy and they were even more amazing. From that day, Timmy was so much bigger than ever so many more than anything that day.Once upon a time, there was a little birdhouse, Timmy and the aliens. He was an airplane, but the aliens were also loved to the aliens who lived in space!Once upon a spaceship. They all the astronauts, but he had a great way to the aliens who lived in space for Timmy and the aliens!Once upon a little girl went to the moon. They flew away to the aliens and they all their town, and they always had a big brother, who lived in town. They flew around the aliens there. The spaceship and the aliens were very important to the aliens
+--------------------------------------------------

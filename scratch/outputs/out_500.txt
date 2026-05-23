@@ -1,0 +1,145 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: A brave knight went into the dark cave.
+--------------------------------------------------
+
+[Sample 1]
+A brave knight went into the dark cave. He wanted to save the girl from a dangerous cave. He opened the door and saw that the princess was in a big hole.
+
+
+
+
+
+
+
+
+When the knight fought for days later, he was brave knight and faced the princess said "Please, the girl had a brave knight. I saw the knight said he had to defeat. The brave knight put her to fight. She said to the princess won.
+
+
+
+
+
+
+The brave knight fought and fought the knight said, she had to save the princess must not be defeated.
+
+
+
+
+
+The princess and the dragon was so the brave knight defeated the brave knight and the princess was defeated and the castle was left the brave knight saved the princess and she was the brave knight and the princess and the brave knight and saved the knight.
+The knight and the knight and the princess saved the princess saved the princess was saved the knight and the princess was the princess and the knight and the knight.
+
+
+The princess and the knight and the knight and the princess and knight won the dragon and the knight and the brave princess wore the knight and the knight and the knight and the brave princess was very brave knight and the knight and the princess, and the knight and the dragon and the princess, but the knight and the dragon and the knight and the princess and the brave knight and the knight and the knight and the princess. The knight and the knight and the knight and the princess and the knight and the knight and the knight and the princess and the knight. The knight was very brave knight and the princess. The knight and the knight and the knight and the princess and the knight, who was the knight.Once upon away. The knight and the knight and the sword and the princess lived happily agreed to the knight and the knight and the princess were safe. The knight and the dragon.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The knight and the princess. The knight and the dragon and the dragon. They lived happily lived happily. They were both had a princess, the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight lived happily ever after a knight and the knight and the knight and the princess and the knight and the princess and the knight and the knight. They are the princess and the knight and the knight and princess lived happily.
+--------------------------------------------------
+
+[Sample 2]
+A brave knight went into the dark cave. He wanted to see what was in a dark cave. He slowly walked up the brave knight entered the cave. He heard the knight was in a little bird.
+
+
+
+
+
+
+The knight saw a dragon. He said in the dragon said, â€œGive me your help. I will not be brave knight! I will protect the knight. That brave knight fought brave knight. Please, brave knight, so I will fight!"
+
+The dragon was brave knight fought the dragon flew up in a princess was scared. He took the dragon. But the knight was brave knight and bravely and the knight had to fight meow the dragon used his sword.
+
+The dragon was bravely fought the dragon flew away to protect the knight and fought the knight defeated the dragon ran away.
+
+The knight and the dragon fought the dragon was so brave knight and the knight was brave knight won the knight had to fight through the dragon was defeated.
+
+The knight fought the dragon and saved the knight fought the knight won the knight fought the brave knight and the dragon fought the knight fought the knight fought the dragon was defeated the dragon.
+
+The knight fought the knight and the dragon lived a dragon was the dragon defeated. 
+
+The knight was not fight for the knight and the dragon defeated with all the knight and save the knight and the knight fought back and the knight.One day and the knight was the knight and everyone was defeated the knight defeated. Everyone cheered for the knight. 
+
+The knight defeated the knight won. 
+
+The knight and the knight and the knight and the knight and the hero had saved the knight was the knight and the knight and the dragon was very happy and the knight and the knight defeated.
+
+The knight had a big, and the knight and the knight was very brave knight and the knight saved the knight and the knight and the knight and they lived happily and the knight lived happily ever since they both of the knight and the knight and the princess from that day!One day were very happy and everyone was the knight. 
+
+The knight and the knight was very happy and everyone was saved the brave knight and the knight was a beautiful princess and the knight, and the knight.Once there was very angry dragons lived happily played and all the knight who was very fair. They had a hero.
+
+
+
+
+
+
+
+
+
+
+
+The knight and the knight
+--------------------------------------------------
+
+[Sample 3]
+A brave knight went into the dark cave. He was bravely faced the cave and faced the dragon trying to defeat the dragon. He faced the dragon and faced him with a powerful dragon. With a huge dragon said, he had to defeat him, but he had a huge beast, brave knight was defeated the princess had to defeat and the dragon was defeated.
+
+
+
+
+
+The knight was defeated the knight fought the dragon's bravery, and the knight defeated the knight defeated the dragon was defeated the dragon fought the dragon defeated the dragon defeated!
+
+The dragon ran away the dragon gave up and the knight thanked the knight and the knight defeated. The knight faced the dragon defeated the knight fought was defeated.
+
+
+
+The knight had defeated the dragon ran away, defeated the knight defeated and the dragon and the knight and the knight defeated the dragon flew away and the boy defeated, the dragon was defeated and the knight and the knight, and the dragon defeated the knight saved the knight and the knight and saved him for the knight defeated the knight defeated.
+The knight and the knight was victorious and the knight and the dragon was defeated. Everyone was the knight defeated.
+
+
+
+The knight was the dragon and the knight and the knight saved the knight and the knight and the knight defeated and defeated the knight and the knight was very brave knight and the knight and the knight was the knight and the kingdom were the knight and the knight and the knight and the knight and the knight and the knight and they were both of the knight and the knight was very happy and the knight and saved the knight. The knight and the knight. 
+
+
+
+
+
+
+
+
+
+
+The knight thanked the knight and the knight and the knight and the knight, who lived happily lived happily. The knight and the knight and the knight and the knight and the knight and the knight and the knight was proud of the knight and the knight and the knight and the knight lived on the knight, and the knight and knight and the knight lived happily knight, and the knight and the knight and the dragon became the knight became their knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight and the knight. They were the knight was the knight and the knight. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The knight and the knight and the knight and the knight and the knight and the knight and the knight was happy and the knight and the knight
+--------------------------------------------------

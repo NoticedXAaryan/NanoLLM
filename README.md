@@ -36,22 +36,22 @@ Instead of copying old 2019 GPT-2 tutorials, NanoLLM uses the exact architectura
 mindmap
   root((NanoLLM))
     Backend
-      Python / PyTorch
-        Matrix Multiplication
-        Backpropagation
-      Model Architecture
-        RoPE Embeddings
-        SwiGLU Activations
-        RMSNorm
-    Data Pipeline
-      HuggingFace
-        TinyStories Dataset
-      Tokenizer
-        BPE (Byte-Pair Encoding)
-    Documentation
-      The Basics
-      The Math
-      The Hardware Limits
+      Python_PyTorch[Python / PyTorch]
+        Matrix[Matrix Multiplication]
+        Backprop[Backpropagation]
+      Architecture[Model Architecture]
+        RoPE[RoPE Embeddings]
+        SwiGLU[SwiGLU Activations]
+        RMSNorm[RMSNorm]
+    Pipeline[Data Pipeline]
+      HuggingFace[HuggingFace]
+        TinyStories[TinyStories Dataset]
+      Tokenizer[Tokenizer]
+        BPE[BPE - Byte-Pair Encoding]
+    Docs[Documentation]
+      Basics[The Basics]
+      Math[The Math]
+      Limits[The Hardware Limits]
 ```
 
 ---

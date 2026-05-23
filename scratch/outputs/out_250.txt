@@ -1,0 +1,67 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: A brave knight went into the dark cave.
+--------------------------------------------------
+
+[Sample 1]
+A brave knight went into the dark cave. He saw the dragon was ready to help her. The princess was very bravely brave knight said, "I will save the princess, knight. I will save her." The knight said, "I am looking for the dragon, I will save the knight, but I am not hurt meow, but I will save me!"
+
+
+
+
+
+The brave knight fought the knight, so the brave knight, fought the dragon, and the dragon was so brave knight and he will help meow for saving your dragon, bravely. But, and the brave knight, and I will not give the knight!" The knight and he wanted to save the mean dragon, and I will give meow, but I will save the knight, will."
+
+
+
+
+
+
+
+
+
+
+The brave knight, and the knight and the dragon was very brave knight, and the knight and the knight and the knight, and the brave knight fought brave knight fought the dragon was the princess. He fought with the brave knight and the dragon and the dragon and the knight fought the brave prince, he was very brave, and the brave knight saved the dragon saved the knight saved the dragon, and the princess and the knight fought the princess and
+--------------------------------------------------
+
+[Sample 2]
+A brave knight went into the dark cave. His sword had a sword. The knight held a sword in front of him, and he had a knight fought against the dragon. He fought the knight defeated him.
+
+
+
+
+
+Suddenly, a sparkly faced the dragon breathed a sparkly, and the knight fought the knight fought brave knight fought the dragon's sword and fought. He fought the dragon's sword was defeated the knight fought away with the knight fought with his sword.
+
+
+
+
+The dragon won the knight defeated the dragon ran away! He fought for a long and defeated the knight and saved the brave knight defeated the sword.
+
+
+
+
+
+
+The knight and the knight was victorious.Once upon a brave knight was saved the knight and the knight defeated the dragon. 
+He wore his sword and the knight fought with his sword. Everyone cheered and the knight was a knight and the knight with the knight defeated the knight who won!Once upon a beautiful princess, the knight was a dragon was very brave knight defeated the knight and the knight and the knight and the dragon and the knight and the knight was the knight and the knight and the knight saved the knight and the knight and the knight were both were the knight and he defeated and
+--------------------------------------------------
+
+[Sample 3]
+A brave knight went into the dark cave. He had a big sword. He had to fight the knight saw the sword. He had to escape! He was brave and the knight was ready to fight the knight!
+
+
+
+
+
+
+The knight fought with the sword and Tom fought bravely fought brave knight fought brave knight. He fought with the knight fought off. He was brave knight won the knight defeated the dragon fought off and won the knight. After a brave knight defeated the knight defeated the dragon.
+The knight fought and the knight defeated the knight and made the knight. He won the knight!
+
+
+The knight saved the knight was so the knight defeated the knight defeated. He defeated the brave knight defeated!Once upon a magical land.
+
+The knight was very brave knight and the knight was very brave knight and the knight, but the knight was able to save the knight and the knight had defeated the knight and the knight won. The knight saved the knight and the knight ran away with the knight and the knight.
+
+The knight was a beautiful knight.
+The knight saved the knight saved the knight. The knight the knight was the knight and the knight was saved the knight and the knight!Once upon a huge dragon was very brave knight
+--------------------------------------------------

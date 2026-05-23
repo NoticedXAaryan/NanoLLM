@@ -1,0 +1,40 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: A brave knight went into the dark cave.
+--------------------------------------------------
+
+[Sample 1]
+A brave knight went into the dark cave. He saw that the shield looked at him and was just trying to save the princess. He was wearing a knight, ready to fighted!
+
+
+The knight thanked the knight stood up to save the princess with the shield. After a brave knight. He was brave knight fought the knight and defeated the dragon with the shield, and he fought bravely faced the knight's weapon. The knight and the princess said:
+
+The knight and the knight defeated the knight defeated the knight defeated. The
+--------------------------------------------------
+
+[Sample 2]
+A brave knight went into the dark cave. He had a sword. He had to go on a long hallway. He was brave knight wanted to save the knight's sword. He saw the boy was bravely faced the knight with his sword. 
+
+
+
+
+
+
+
+The knight shouted, "I saw the knight fought against the dragon. It was a knight. He fought the knight fought the knight won the knight fought brave knight and the dragon and fought for a long, but the knight said "I won! The knight
+--------------------------------------------------
+
+[Sample 3]
+A brave knight went into the dark cave. He was very brave knight. He was looking for the knight wanted to make his sword.
+
+
+
+
+The knight fought with his sword and strong knights fought. He used his sword to save the knight fought the dragon.
+
+He fought bravely fought brave knight fought with the boy.
+
+But the knight was determined to the dragon defeated the knight fought and fought against the knight won.
+
+
+In the dark and the knight won the knight won the knight defeated the knight made
+--------------------------------------------------

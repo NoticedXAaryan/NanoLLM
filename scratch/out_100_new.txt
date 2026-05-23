@@ -1,0 +1,10 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: The ancient wizard stood at the edge of the cliff,
+--------------------------------------------------
+
+[Sample 1]
+The ancient wizard stood at the edge of the cliff, and saw a tiny fairy emerged from the water. "I'm so small frog, will you have a magical land of magic."
+
+The fairy smiled, and the frog was happy to beamed with relief. 
+The prince was so she thanked the frog said, "Remember that you are now beaming up to take this will be thankful for its power, and thanked the frog for the courage and the wizard. He had done as a prince, and the frog and the forest, now
+--------------------------------------------------

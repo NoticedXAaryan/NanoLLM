@@ -1,0 +1,39 @@
+Loading model from models\NanoLLM_20k_weights.pt...
+Prompt: Once upon a time, there was a little girl named Lily.
+--------------------------------------------------
+
+[Sample 1]
+Once upon a time, there was a little girl named Lily. She lived in a house with her mommy and daddy was very important. Lily loved to play with her daddy, but she had a big brother. 
+
+
+
+
+
+
+One day, daddy took her two weeks later they decided to visit her mommy, daddy, Timmy and Lily loved her little brother, who had to visit her mommy wanted to go outside to the house for a visit her older and his big brother wanted her. When he was their couch. They played
+--------------------------------------------------
+
+[Sample 2]
+Once upon a time, there was a little girl named Lily. She was very sad. She was sitting in her room.
+
+
+
+Lily was standing in her room was walking through the hall, feeling a little girl wanted a special place.
+
+
+Suddenly, she felt something very sad. Suddenly, she heard a big noise. It was an idea came from the voice called out for a little girl called out loud and she had an old lady. Lily wanted to say, "Help, so she asked the girl, "What's name.
+--------------------------------------------------
+
+[Sample 3]
+Once upon a time, there was a little girl named Lily. She loved to visit her grandma's house had a lotion. One day, Lily's mommy and her grandma let her to help her to help her. Lily loved her room. Lily helped her mommy who always put on her grandma's house and grandma liked to cook the lotion.
+
+
+
+
+
+
+One day, Lily's mommy needed to brush her hair. When Lily was busy putting on the bathroom, Lily asked Lily's name, grandma made apron to help
+--------------------------------------------------
+
+--- STDERR ---
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.

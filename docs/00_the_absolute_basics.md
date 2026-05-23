@@ -14,6 +14,14 @@ How does a computer read a word? How does it "learn"?
 
 Computers only understand numbers (0s and 1s). If you feed a neural network the raw string **"The cat sat"**, it will instantly crash. We have to translate English text into pure Mathematics.
 
+```mermaid
+flowchart LR
+    Text["The cat sat"] --> Tokenizer["Tokenizer (Dictionary)"]
+    Tokenizer --> IDs["Tokens: [464, 3797, 3332]"]
+    IDs --> Embeddings["Embedding Matrix"]
+    Embeddings --> Tensor["3D Tensor Grid"]
+```
+
 ### Step 1: Tokenization (The Dictionary)
 We use a **Tokenizer** (acting like a giant dictionary). It assigns a unique numerical ID to every word, sub-word, or character. 
 
@@ -77,6 +85,23 @@ Okay, so we fed our Tensor into the model. Now we want the model to predict the 
 
 How do we teach it? We use **Backpropagation**.
 
+```mermaid
+mindmap
+  root((Learning))
+    Forward_Pass[Forward Pass]
+      Matrix_Math[Matrix Multiplications]
+      Predictions[Predict Next Word]
+    Loss_Function[Loss Function]
+      Cross_Entropy[Cross-Entropy]
+      Score_Error[Score the Error]
+    Backprop[Backpropagation]
+      Calculus[Calculus Chain Rule]
+      Gradients[Calculate Gradients]
+    Optimizer[Optimizer]
+      AdamW[AdamW]
+      Update_Weights[Update Weights]
+```
+
 ### 1. The Forward Pass (Guessing)
 We feed the model: `"The cat"`.
 The model runs millions of matrix multiplications and makes a guess. It predicts the next word is: `"helicopter"`.
@@ -89,6 +114,24 @@ Here is the magic of Calculus. The computer works backwards through the entire n
 
 ### 4. The Optimizer (Fixing the Brain)
 Now we use an **Optimizer** (like AdamW). It looks at all the Gradients and says: *"Okay, to get closer to the word 'sat', we need to turn this weight down by 0.01, and turn that weight up by 0.05."* It updates the weights. The model has just "learned"!
+
+```mermaid
+sequenceDiagram
+    participant Input as Input Data
+    participant Model as Neural Network
+    participant Loss as Loss Function
+    participant Optimizer as Optimizer
+    
+    Input->>Model: Forward Pass ("The cat")
+    Model->>Loss: Prediction ("helicopter")
+    Note over Loss: Actual expected word: "sat"
+    Loss-->>Loss: Calculate Cross-Entropy Loss
+    Loss->>Model: Backpropagation
+    Note over Model: Calculate Gradients (Chain Rule)
+    Model->>Optimizer: Send Gradients
+    Optimizer->>Model: Update Weights
+    Note over Optimizer: "Turn this weight down, turn that up"
+```
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Calculus of Backpropagation</strong></summary>

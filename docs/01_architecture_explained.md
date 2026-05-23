@@ -8,28 +8,50 @@
 
 When building **NanoLLM**, the easiest path would have been to copy an old PyTorch GPT-2 tutorial. But the AI world has moved incredibly fast. I wanted to build something using the **exact same architectural blueprints** as today’s open-source giants: **LLaMA 3**, **Mistral**, and **Gemma**.
 
+```mermaid
+mindmap
+  root((Architecture))
+    Embeddings
+      RoPE[Rotary Position Embeddings]
+        Relative[Relative Positions]
+        Extrapolate[Extrapolates to Long Contexts]
+    Normalization
+      RMSNorm[Root Mean Square Norm]
+        No_Mean[No Mean Subtraction]
+        Faster_Compute[15% Faster Compute]
+    Activations
+      SwiGLU[SwiGLU Feed Forward]
+        Gate[Information Gate]
+        No_Bias[No Biases Used]
+    Memory
+      Weight_Tying[Weight Tying]
+        Shared[Shared Embed/Head Memory]
+        Params[Saves 1.5M Params]
+```
+
 Here is the exact visual map of how NanoLLM processes text. Notice how the data flows sequentially from node to node.
 
 ```mermaid
 flowchart TD
-    %% Styling
     classDef input fill:#2b313c,stroke:#8b949e,stroke-width:2px,color:#c9d1d9
     classDef block fill:#1f6feb,stroke:#388bfd,stroke-width:2px,color:#ffffff,font-weight:bold
     classDef final fill:#238636,stroke:#2ea043,stroke-width:2px,color:#ffffff,font-weight:bold
 
-    A([Raw Text Input]):::input --> B[Token Embedding Matrix]:::input
+    A(["Raw Text Input"]):::input --> B["Token Embedding Matrix"]:::input
     
-    subgraph "Transformer Block (Repeated 6x)"
-        B --> C[RMSNorm]
-        C --> D{Multi-Head Attention <br> with RoPE}:::block
-        D -->|Residual Add| E[RMSNorm]
-        E --> F{SwiGLU Feed Forward}:::block
-        F -->|Residual Add| G([Output of Block])
+    B --> C
+    
+    subgraph TB ["Transformer Block (Repeated 6x)"]
+        direction TD
+        C["RMSNorm"] --> D{"Multi-Head Attention\nwith RoPE"}:::block
+        D -->|Residual Add| E["RMSNorm"]
+        E --> F{"SwiGLU Feed Forward"}:::block
+        F -->|Residual Add| G(["Output of Block"])
     end
     
-    G --> H[Final RMSNorm]
-    H --> I[Language Model Head <br> Tied Weights]:::final
-    I --> J([Probabilities for Next Word]):::final
+    G --> H["Final RMSNorm"]
+    H --> I["Language Model Head\nTied Weights"]:::final
+    I --> J(["Probabilities for Next Word"]):::final
 ```
 
 ---
@@ -103,6 +125,25 @@ Inside every Transformer block is a Feed-Forward Network (FFN). This is essentia
 **SwiGLU** (Swish Gated Linear Unit) splits the incoming data into two halves. It passes one half through a non-linear curve, and multiplies it by the other half (acting as a "Gate"). While it requires three matrices instead of two, SwiGLU has empirically proven to pack significantly more "reasoning capability" per parameter than GELU. This is exactly how a tiny 12.6M parameter model like NanoLLM can write coherent, logical short stories!
 
 > 💻 **Code Pointer:** Find the `FeedForward` class in `model.py`. You will see `self.w1`, `self.w2`, and `self.w3` which map exactly to the SwiGLU equations.
+
+```mermaid
+sequenceDiagram
+    participant X as Input Data (x)
+    participant W as W Branch (Gate)
+    participant V as V Branch (Value)
+    participant W2 as Final Matrix (W2)
+    
+    X->>W: Multiply by W1
+    X->>V: Multiply by W3
+    W->>W: Apply Swish Activation
+    Note over W: Creates a continuous, non-linear curve
+    V->>V: Linear Projection
+    Note over W,V: Element-wise Multiplication (Gate mechanism)
+    W-->>W2: Gated Output
+    V-->>W2: Projected Output
+    W2->>W2: Multiply by W2
+    Note over W2: Final SwiGLU Output to Residual Stream
+```
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of SwiGLU</strong></summary>
