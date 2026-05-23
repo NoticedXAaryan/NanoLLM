@@ -83,7 +83,7 @@ python train.py
 
 ---
 
-## 📚 The Rabbit Hole Curriculum
+## 📚 The Deep Dive Curriculum
 
 This documentation is designed as a **Dual-Layered Book**. 
 Read the main body for a quick, high-level understanding. Expand the `🔬 Deep Dive` sections if you want the hardcore math, edge-cases, and textbook explanations.

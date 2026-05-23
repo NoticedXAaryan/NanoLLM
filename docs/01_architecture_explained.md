@@ -44,6 +44,8 @@ Neural networks don’t inherently understand the order of words. If you feed th
 
 > [!TIP]
 > **Think of it like a clock:** If the word "cat" is at position 1, its vector points to 1 o'clock. If it's at position 2, it points to 2 o'clock. The attention mechanism can easily calculate the distance between words by just looking at the angle between their vectors! This allows the model to extrapolate to much longer contexts naturally.
+> 
+> 💻 **Code Pointer:** Check out the `apply_rotary_emb` function in `model.py` to see exactly how these mathematical rotations are applied to the vectors before attention is computed.
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of RoPE</strong></summary>
@@ -56,6 +58,7 @@ This guarantees that the inner product of query at position $m$ and key at posit
 $$ \langle f_{q}(x_{m}, m), f_{k}(x_{n}, n) \rangle = g(x_{m}, x_{n}, m - n) $$
 
 📚 **Reference Paper:** [RoFormer: Enhanced Transformer with Rotary Position Embedding (2021)](https://arxiv.org/abs/2104.09864)
+🎥 **YouTube Breakdown:** Watch [EleutherAI's visual breakdown of RoPE](https://www.youtube.com/watch?v=o29P0Kpobz0).
 </details>
 
 ---
@@ -70,6 +73,8 @@ It turns out, calculating and subtracting the mean is computationally expensive 
 
 > [!IMPORTANT]
 > When you're training a model for 20,000 steps, saving 15% computational time per layer is a massive win for laptop GPUs!
+> 
+> 💻 **Code Pointer:** Check out the `RMSNorm` class in `model.py` to see the exact 5 lines of math that perform this operation.
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of RMSNorm</strong></summary>
@@ -84,6 +89,7 @@ $$ y = \frac{x}{RMS(x)} \odot \gamma $$
 This eliminates the need to calculate the mean $\mu$, which requires an extra synchronization pass across the vector, directly speeding up GPU execution.
 
 📚 **Reference Paper:** [Root Mean Square Layer Normalization (2019)](https://arxiv.org/abs/1910.07467)
+🔗 **GitHub Reference:** See how Andrej Karpathy implements this in C in his amazing repo: [llama2.c](https://github.com/karpathy/llama2.c).
 </details>
 
 ---
@@ -95,6 +101,8 @@ Inside every Transformer block is a Feed-Forward Network (FFN). This is essentia
 
 **💡 The Solution: SwiGLU**
 **SwiGLU** (Swish Gated Linear Unit) splits the incoming data into two halves. It passes one half through a non-linear curve, and multiplies it by the other half (acting as a "Gate"). While it requires three matrices instead of two, SwiGLU has empirically proven to pack significantly more "reasoning capability" per parameter than GELU. This is exactly how a tiny 12.6M parameter model like NanoLLM can write coherent, logical short stories!
+
+> 💻 **Code Pointer:** Find the `FeedForward` class in `model.py`. You will see `self.w1`, `self.w2`, and `self.w3` which map exactly to the SwiGLU equations.
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of SwiGLU</strong></summary>
@@ -122,6 +130,18 @@ In NLP models, the **Input Embedding** (translating words into numbers) and the 
 In NanoLLM, I used **Weight Tying**—literally pointing both layers to the exact same block of memory in PyTorch using `self.lm_head.weight = self.tok_emb.weight`. 
 
 **The Result:** I saved roughly **1.5 Million parameters** of VRAM space, and it actually stabilizes the training because the model doesn't have to learn the definition of a word twice (once for reading, once for speaking).
+
+> 💻 **Code Pointer:** Open `model.py` and search for `self.lm_head.weight = self.tok_emb.weight`. That single line of Python is what achieves Weight Tying!
+
+---
+
+## 🚀 Further Reading & Essential Resources
+
+If you want to dive deeper into the architectural decisions that separate GPT-2 from modern LLaMA architectures, these resources are goldmines:
+
+- 📄 **The LLaMA Paper:** Read the official [LLaMA: Open and Efficient Foundation Language Models (2023) Paper](https://arxiv.org/abs/2302.13971).
+- 💻 **Karpathy's llama2.c:** A brilliantly simple implementation of the exact LLaMA architecture in raw C: [llama2.c](https://github.com/karpathy/llama2.c).
+- 🧑‍🏫 **HuggingFace Transformers:** Read through the official [HuggingFace LLaMA Source Code](https://github.com/huggingface/transformers/blob/main/src/transformers/models/llama/modeling_llama.py) to see how this architecture scales to 70 Billion parameters.
 
 ---
 
