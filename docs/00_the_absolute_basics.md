@@ -34,6 +34,23 @@ A Token ID is just a label. There is no "meaning" yet. Every single token ID loo
 
 In NanoLLM, this vector is 384 numbers long. These numbers define the "meaning" of the word in a high-dimensional geometric space! Words with similar meanings (like "cat" and "dog") will have mathematically similar vectors pointing in the same direction.
 
+<details>
+<summary>🔬 <strong>Deep Dive: The Math of Meaning (Pythagoras & Cosine Similarity)</strong></summary>
+
+How does the computer mathematically know that "King" and "Queen" are related? It uses the same math you learned in high school geometry!
+
+If you plot two vectors on a graph, you can find the distance between them using the **Pythagorean Theorem** ($a^2 + b^2 = c^2$). In a 384-dimensional space, the formula simply scales up:
+$$ Distance = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2 + ... + (x_{384} - y_{384})^2} $$
+
+However, AI models prefer to measure the **angle** between the two lines, rather than the raw distance. This is called **Cosine Similarity**.
+$$ \cos(\theta) = \frac{A \cdot B}{||A|| ||B||} $$
+
+If the angle between the vector for "King" and "Queen" is very small (cosine similarity close to 1.0), the model instantly knows these words have almost the exact same contextual meaning!
+
+🎥 **YouTube Resource:** To truly understand how these vectors map "meaning" in geometric space, watch [Word Embeddings by 3Blue1Brown](https://www.youtube.com/watch?v=gQddtTkdG14).
+🔗 **Documentation:** Read the [PyTorch Official Tensor Tutorial](https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html) to start coding them in Python.
+</details>
+
 ### Step 3: The Tensor (The Grid)
 The sentence "The cat sat" is now a 3D grid of floating-point numbers:
 `Batch Size (1) × Sequence Length (3) × Embedding Size (384)`
@@ -50,9 +67,6 @@ A Tensor is simply a fancy mathematical word for a multi-dimensional array of nu
 *   **3D Tensor:** A Cube of numbers (this is what language models use!).
 
 PyTorch is a Python library specifically designed to do super-fast math on these Tensors using your GPU. 
-
-🎥 **YouTube Resource:** To truly understand how these vectors map "meaning" in geometric space, watch [Word Embeddings by 3Blue1Brown](https://www.youtube.com/watch?v=gQddtTkdG14).
-🔗 **Documentation:** Read the [PyTorch Official Tensor Tutorial](https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html) to start coding them in Python.
 </details>
 
 ---

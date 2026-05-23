@@ -107,14 +107,19 @@ Inside every Transformer block is a Feed-Forward Network (FFN). This is essentia
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of SwiGLU</strong></summary>
 
-Standard FFN (with ReLU):
+For decades, the standard Feed-Forward Network (FFN) used ReLU:
 $$ FFN(x) = ReLU(x W_1 + b_1) W_2 + b_2 $$
+Where $ReLU(z) = \max(0, z)$. It was simple, fast, but mathematically "dumb". It just zeroes out negative numbers.
 
-SwiGLU FFN (No biases used in modern implementations):
-$$ Swish(x) = x \cdot \sigma(\beta x) $$
+SwiGLU is a Gated Linear Unit variant. It uses three weight matrices ($W, V, W_2$) and NO biases. The data $x$ is multiplied by $W$ and $V$ in parallel:
+1. The $W$ branch is passed through the Swish activation function: $Swish(z) = z \cdot \sigma(\beta z)$. This creates a smooth, continuous curve that allows negative gradients to survive (preventing "dead neurons").
+2. The $V$ branch acts as a raw linear projection.
+3. The two branches are then multiplied together element-wise ($\odot$).
+
 $$ SwiGLU(x) = (Swish(x W) \odot (x V)) W_2 $$
 
-It acts as a dynamic gate, where the network learns to dynamically "allow" or "block" information from passing through based on the context.
+**Why is this so powerful?**
+The multiplication ($\odot$) acts as a dynamic **Information Gate**. The network literally learns to use the $W$ branch to output probabilities (between 0 and 1) that act as a mask over the $V$ branch. It dynamically "allows" or "blocks" information from passing through to the final matrix $W_2$ based entirely on the semantic context of the sentence!
 
 📚 **Reference Paper:** [GLU Variants Improve Transformer (2020)](https://arxiv.org/abs/2002.05202)
 </details>

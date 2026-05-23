@@ -13,41 +13,31 @@ As you scroll through the massive raw outputs below, refer to this graph. It plo
 
 ## Stop: 100 Tokens
 
-- **Prompt:** `A brave knight went into the dark cave.`
-- **Context Length:** `100 Tokens`
-- **Exact Output:**
+> [!NOTE]
+> **Prompt:** `The ancient wizard stood at the edge of the cliff,`
+> **Context Length:** `100 Tokens`
 
-> A brave knight went into the dark cave. He saw that the shield looked at him and was just trying to save the princess. He was wearing a knight, ready to fighted!
+**Exact Output:**
+> The ancient wizard stood at the edge of the cliff, and saw a tiny fairy emerged from the water. "I'm so small frog, will you have a magical land of magic."
+> 
+> The fairy smiled, and the frog was happy to beamed with relief. 
+> The prince was so she thanked the frog said, "Remember that you are now beaming up to take this will be thankful for its power, and thanked the frog for the courage and the wizard. He had done as a prince, and the frog and the forest, now
 
-
-The knight thanked the knight stood up to save the princess with the shield. After a brave knight. He was brave knight fought the knight and defeated the dragon with the shield, and he fought bravely faced the knight's weapon. The knight and the princess said:
-
-The knight and the knight defeated the knight defeated the knight defeated. The
 --------------------------------------------------
 
 ---
 
 ## Stop: 200 Tokens
 
-- **Prompt:** `A brave knight went into the dark cave.`
-- **Context Length:** `200 Tokens`
-- **Exact Output:**
+> [!NOTE]
+> **Prompt:** `When the spaceship finally landed on the red planet,`
+> **Context Length:** `200 Tokens`
 
-> A brave knight went into the dark cave. He was looking around and faced the knight. He saw a castle was very big, dangerous. A knight was using a big dragon.
+**Exact Output:**
+> When the spaceship finally landed on the red planet, Timmy was so excited to his friends saw that he saw a big tree with the planet.
+> 
+> Timmy looked at the spaceship from the spaceship was so much bigger and aliens flew back up in the aliens called his spaceship. Timmy and they were even more amazing. From that day, Timmy was so much bigger than ever so many more than anything that day.Once upon a time, there was a little birdhouse, Timmy and the aliens. He was an airplane, but the aliens were also loved to the aliens who lived in space!Once upon a spaceship. They all the astronauts, but he had a great way to the aliens who lived in space for Timmy and the aliens!Once upon a little girl went to the moon. They flew away to the aliens and they all their town, and they always had a big brother, who lived in town. They flew around the aliens there. The spaceship and the aliens were very important to the aliens
 
-
-
-The knight fought brave knight stepped around the knight fought a dragon. The dragon was ready to defeat. He fought brave knight fought brave knight fought dragons with a sword and fought the dragon. But he shouted at the dragon shouted his sword.
-
-
-The knight fought strong and fought brave knight fought the knight fought hard. He fought back and defeated the knight defeated the knight. When he fought.
-
-The knight fought for a long battle was so far away the knight fought the knight defeated the knight fought the knight defeated the dragon defeated the dragon and he fought a sword and the knight defeated the knight defeated the dragon defeated the knight and the knight fought the princess.
-
-
-
-
-The knight and the knight defeated the brave knight fought the dragon and he fought the knight defeated the knight fought the knight, but the brave knight and the knight
 --------------------------------------------------
 
 ---

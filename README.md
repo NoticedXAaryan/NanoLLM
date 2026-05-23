@@ -1,13 +1,14 @@
 <div align="center">
 
-# 🌌 NanoLLM
+# 🧠 NanoLLM
 
-**A From-Scratch, 12M Parameter Large Language Model Built on Modern Architecture.**
+[![GitHub stars](https://img.shields.io/github/stars/NoticedXAaryan/NanoLLM?style=for-the-badge&logo=github&color=FFD700)](https://github.com/NoticedXAaryan/NanoLLM/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/NoticedXAaryan/NanoLLM?style=for-the-badge&logo=github&color=blue)](https://github.com/NoticedXAaryan/NanoLLM/network/members)
+[![License](https://img.shields.io/github/license/NoticedXAaryan/NanoLLM?style=for-the-badge)](LICENSE)
+[![Model Size](https://img.shields.io/badge/Model_Size-12.6M_Params-blueviolet?style=for-the-badge)](#)
+[![Architecture](https://img.shields.io/badge/Architecture-LLaMA_Variant-success?style=for-the-badge)](#)
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](#)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)](#)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat&logo=opensourceinitiative&logoColor=white)](#)
-[![Architecture](https://img.shields.io/badge/Architecture-LLaMA--Style-blueviolet?style=flat)](#)
+> *"A completely from-scratch, modern Large Language Model built to be the ultimate educational resource."*
 
 *NanoLLM is not just a codebase—it's a masterclass in building modern AI from the ground up.*
 
