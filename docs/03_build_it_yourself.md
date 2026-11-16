@@ -59,7 +59,7 @@ loss = F.cross_entropy(logits, y)
 # 4. The Backward Pass (Finding the blame)
 loss.backward()
 ```
-**What happens in the background?** This triggers the Backpropagation we discussed in the Basics guide. PyTorch calculates the partial derivatives for all 12.6 million parameters, figuring out exactly which numbers need to go up or down to make the loss smaller next time.
+**What happens in the background?** This triggers the Backpropagation we discussed in the Basics guide. PyTorch calculates the partial derivatives for all 29.9 million parameters, figuring out exactly which numbers need to go up or down to make the loss smaller next time.
 
 ```python
 # 5. Gradient Clipping

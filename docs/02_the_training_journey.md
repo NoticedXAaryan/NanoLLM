@@ -14,7 +14,7 @@ Here is the exact story of how I squeezed 20,000 training steps out of that GPU,
 
 You can't train a baby LLM on Wikipedia—it doesn't have the parameter capacity (brain power) to memorize world history. 
 
-Instead, I used **TinyStories**. It's a dataset of 2.1 million synthetically generated short stories using only words a 3-year-old child would understand. This allows a tiny model (like our ~12M parameter NanoLLM) to completely master English grammar, logic, and narrative structure without being bogged down by complex vocabulary.
+Instead, I used **TinyStories**. It's a dataset of 2.1 million synthetically generated short stories using only words a 3-year-old child would understand. This allows a small model (NanoLLM is 29.9M parameters) to completely master English grammar, logic, and narrative structure without being bogged down by complex vocabulary.
 
 <details>
 <summary>🔬 <strong>Deep Dive: How TinyStories was Made</strong></summary>

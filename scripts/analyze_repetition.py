@@ -1,6 +1,10 @@
-import matplotlib.pyplot as plt
 import os
 import re
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 plt.style.use('dark_background')
 
@@ -29,7 +33,7 @@ ax.set_facecolor('#0d1117')
 colors = ['#3fb950', '#2ea043', '#8957e5', '#a371f7', '#d29922', '#e3b341', '#f85149', '#ff7b72']
 
 for idx, tokens in enumerate(stops):
-    x, y = analyze_file(f'scratch/outputs/out_{tokens}.txt')
+    x, y = analyze_file(os.path.join(ROOT, 'scratch', 'outputs', f'out_{tokens}.txt'))
     if x:
         ax.plot(x, y, label=f'{tokens} Tokens', color=colors[idx % len(colors)], linewidth=2)
 
@@ -38,7 +42,7 @@ ax.set_xlabel('Words Generated', color='#8b949e', fontsize=12)
 ax.set_ylabel('Total Unique Words Used', color='#8b949e', fontsize=12)
 
 ax.spines['bottom'].set_color('#30363d')
-ax.spines['top'].set_visible(False) 
+ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.spines['left'].set_color('#30363d')
 
@@ -48,6 +52,7 @@ ax.tick_params(axis='y', colors='#8b949e')
 ax.grid(True, linestyle='--', alpha=0.2, color='#8b949e')
 ax.legend(facecolor='#161b22', edgecolor='#30363d', labelcolor='white')
 
-os.makedirs('assets', exist_ok=True)
-plt.savefig('assets/attention_decay.png', bbox_inches='tight', facecolor=fig.get_facecolor())
-print("Plot saved to assets/attention_decay.png")
+os.makedirs(os.path.join(ROOT, 'assets'), exist_ok=True)
+out_path = os.path.join(ROOT, 'assets', 'attention_decay.png')
+plt.savefig(out_path, bbox_inches='tight', facecolor=fig.get_facecolor())
+print(f"Plot saved to {out_path}")

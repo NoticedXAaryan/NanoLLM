@@ -29,7 +29,7 @@ def tokenize_dataset(split: str = "train") -> np.ndarray:
     tok = get_tokenizer()
     eos_id = tok.eos_token_id
 
-    dataset = load_dataset(tcfg.dataset_name, split=split, trust_remote_code=True)
+    dataset = load_dataset(tcfg.dataset_name, split=split)
 
     all_tokens = []
     for example in tqdm(dataset, desc=f"Tokenizing {split}"):
@@ -37,6 +37,8 @@ def tokenize_dataset(split: str = "train") -> np.ndarray:
         ids.append(eos_id)       # Separate stories with EOS
         all_tokens.extend(ids)
 
+    if all_tokens and max(all_tokens) > np.iinfo(np.uint16).max:
+        raise ValueError("Token id does not fit in uint16; the on-disk cache would wrap.")
     arr = np.array(all_tokens, dtype=np.uint16)
     mm = np.memmap(cache_path, dtype=np.uint16, mode="w+", shape=(len(arr),))
     mm[:] = arr
@@ -55,7 +57,12 @@ class TokenDataset(Dataset):
     def __init__(self, tokens: np.ndarray, seq_len: int):
         self.tokens = tokens
         self.seq_len = seq_len
-        self.n = len(tokens) - seq_len - 1
+        # Each sample needs seq_len input tokens and one extra target token.
+        self.n = len(tokens) - seq_len
+        if self.n <= 0:
+            raise ValueError(
+                f"Need at least {seq_len + 1} tokens to build a sample, got {len(tokens)}."
+            )
 
     def __len__(self):
         return self.n
@@ -82,13 +89,14 @@ def get_dataloaders(seq_len: int = None, batch_size: int = None):
     train_ds = TokenDataset(train_tokens, seq_len)
     val_ds   = TokenDataset(val_tokens,   seq_len)
 
+    pin = torch.cuda.is_available()
     train_loader = DataLoader(
         train_ds, batch_size=batch_size, shuffle=True,
-        num_workers=4, pin_memory=True, drop_last=True
+        num_workers=4, pin_memory=pin, drop_last=True
     )
     val_loader = DataLoader(
         val_ds, batch_size=batch_size, shuffle=False,
-        num_workers=2, pin_memory=True, drop_last=True
+        num_workers=2, pin_memory=pin, drop_last=True
     )
 
     print(f"[data] Train: {len(train_ds):,} samples | Val: {len(val_ds):,} samples")

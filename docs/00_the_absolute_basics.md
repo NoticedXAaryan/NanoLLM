@@ -144,7 +144,7 @@ To figure out how much a weight deep inside the network ($w_1$) contributed to t
 **The Chain Rule unrolled:**
 $$ \frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial h} \cdot \frac{\partial h}{\partial w_1} $$
 
-When you call `loss.backward()` in PyTorch, it is automatically calculating these massive partial derivatives for all 12.6 million parameters in NanoLLM simultaneously using an Autograd engine!
+When you call `loss.backward()` in PyTorch, it is automatically calculating these massive partial derivatives for all 29.9 million parameters in NanoLLM simultaneously using an Autograd engine!
 
 🎥 **YouTube Resources:** 
 1. Watch [What is Backpropagation really doing? by 3Blue1Brown](https://www.youtube.com/watch?v=Ilg3gGewQ5U).

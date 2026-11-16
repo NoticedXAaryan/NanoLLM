@@ -7,7 +7,7 @@ from dataclasses import dataclass
 @dataclass
 class ModelConfig:
     # Architecture
-    vocab_size: int = 4096          # Will be overwritten by tokenizer vocab size
+    vocab_size: int = 50257         # GPT-2 BPE. train.py and generate.py refresh this from the tokenizer.
     embed_dim: int = 384            # Embedding / hidden dimension
     num_heads: int = 6              # Attention heads (embed_dim must be divisible by num_heads)
     num_layers: int = 6             # Transformer blocks
@@ -19,7 +19,7 @@ class ModelConfig:
 class TrainConfig:
     # Data
     dataset_name: str = "roneneldan/TinyStories"
-    tokenizer_name: str = "gpt2"    # Used for BPE tokenization; vocab size will be reduced
+    tokenizer_name: str = "gpt2"    # GPT-2 BPE. Vocabulary is the full 50,257 tokens.
     data_cache_dir: str = "./data_cache"
 
     # Training
