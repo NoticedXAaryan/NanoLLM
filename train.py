@@ -14,9 +14,10 @@ import os
 import re
 import json
 import time
+from contextlib import nullcontext
 import torch
 from config import model_config as mcfg, train_config as tcfg
-from model import NanoLLM
+from model import NanoLLM, load_model_weights
 from data import get_dataloaders
 from tokenizer import get_tokenizer, encode, decode
 from utils import cosine_lr_with_warmup, save_checkpoint, plot_loss_curve, log_to_jsonl
@@ -61,9 +62,9 @@ def find_latest_checkpoint(checkpoint_dir: str) -> str | None:
 
 def load_loss_history(log_path: str, up_to_step: int):
     """Reload train/val losses from the JSONL log for loss curve continuity."""
-    train_losses, val_losses, logged_steps = [], [], []
+    train_losses, val_losses, logged_steps, val_steps = [], [], [], []
     if not os.path.exists(log_path):
-        return train_losses, val_losses, logged_steps
+        return train_losses, val_losses, logged_steps, val_steps
     with open(log_path, "r") as f:
         for line in f:
             try:
@@ -78,7 +79,15 @@ def load_loss_history(log_path: str, up_to_step: int):
                 logged_steps.append(s)
             if "val_loss" in rec:
                 val_losses.append(rec["val_loss"])
-    return train_losses, val_losses, logged_steps
+                val_steps.append(s)
+    return train_losses, val_losses, logged_steps, val_steps
+
+
+def amp_context(device: torch.device):
+    """bf16 autocast on CUDA. CPU stays in fp32; fused AdamW is CUDA-only."""
+    if tcfg.use_bf16 and device.type == "cuda":
+        return torch.autocast(device_type="cuda", dtype=torch.bfloat16)
+    return nullcontext()
 
 
 def evaluate(model, val_loader, device, max_batches=50):
@@ -91,7 +100,7 @@ def evaluate(model, val_loader, device, max_batches=50):
             if count >= max_batches:
                 break
             x, y = x.to(device), y.to(device)
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=tcfg.use_bf16):
+            with amp_context(device):
                 _, loss = model(x, y)
             total_loss += loss.item()
             count += 1
@@ -103,7 +112,6 @@ def evaluate(model, val_loader, device, max_batches=50):
 def generate_sample(model, device):
     """Generate a sample text continuation from the configured prompt."""
     model.eval()
-    tok = get_tokenizer()
     prompt_ids = encode(tcfg.gen_prompt)
     idx = torch.tensor([prompt_ids], dtype=torch.long, device=device)
     out = model.generate(
@@ -139,14 +147,17 @@ def main():
         {"params": decay_params,    "weight_decay": tcfg.weight_decay},
         {"params": no_decay_params, "weight_decay": 0.0},
     ]
-    optimizer = torch.optim.AdamW(optim_groups, lr=tcfg.learning_rate, betas=(0.9, 0.95), fused=True)
+    adam_kwargs = {"lr": tcfg.learning_rate, "betas": (0.9, 0.95)}
+    if device.type == "cuda":
+        adam_kwargs["fused"] = True
+    optimizer = torch.optim.AdamW(optim_groups, **adam_kwargs)
 
     # ── Resume from checkpoint (if available) ─────────────────────────────────
     resume_step = 0
     ckpt_path = find_latest_checkpoint(tcfg.checkpoint_dir)
     if ckpt_path:
         ckpt = torch.load(ckpt_path, map_location=device, weights_only=True)
-        model.load_state_dict(ckpt["model_state"])
+        load_model_weights(model, ckpt["model_state"])
         optimizer.load_state_dict(ckpt["optimizer_state"])
         resume_step = ckpt["step"]
         print(f"  ✓ Resuming from checkpoint: {os.path.basename(ckpt_path)} (step {resume_step})")
@@ -164,10 +175,10 @@ def main():
 
     # Reload prior loss history for complete loss curve
     if resume_step > 0:
-        train_losses, val_losses, logged_steps = load_loss_history(log_path, resume_step)
+        train_losses, val_losses, logged_steps, val_steps = load_loss_history(log_path, resume_step)
         print(f"  ✓ Loaded {len(train_losses)} train / {len(val_losses)} val loss records from log")
     else:
-        train_losses, val_losses, logged_steps = [], [], []
+        train_losses, val_losses, logged_steps, val_steps = [], [], [], []
 
     # ── Derived constants ─────────────────────────────────────────────────────
     effective_batch = tcfg.batch_size * tcfg.grad_accum_steps
@@ -210,6 +221,7 @@ def main():
     # ── Training loop ─────────────────────────────────────────────────────────
     model.train()
     step = resume_step
+    accum_loss = 0.0
     optimizer.zero_grad()
     train_start = time.time()
     t0 = time.time()
@@ -233,7 +245,7 @@ def main():
 
             x, y = x.to(device), y.to(device)
 
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=tcfg.use_bf16):
+            with amp_context(device):
                 _, loss = model(x, y)
                 loss = loss / tcfg.grad_accum_steps  # Normalize gradient
 
@@ -283,6 +295,7 @@ def main():
         if step % tcfg.eval_interval == 0:
             val_loss = evaluate(model, val_loader, device)
             val_losses.append(val_loss)
+            val_steps.append(step)
             ppl = torch.exp(torch.tensor(val_loss)).item()
             sample = generate_sample(model, device)
 
@@ -312,7 +325,8 @@ def main():
     save_checkpoint(model, optimizer, step, accum_loss, tcfg)
     plot_loss_curve(
         train_losses, val_losses, logged_steps,
-        save_path=os.path.join(tcfg.log_dir, "loss_curve.png")
+        save_path=os.path.join(tcfg.log_dir, "loss_curve.png"),
+        val_steps=val_steps,
     )
 
     print()
@@ -320,8 +334,11 @@ def main():
     print("  Training Complete!")
     print("=" * 62)
     print(f"  Total time      : {format_time(total_time)}")
-    print(f"  Final val loss  : {val_losses[-1]:.4f}")
-    print(f"  Final perplexity: {torch.exp(torch.tensor(val_losses[-1])):.2f}")
+    if val_losses:
+        print(f"  Final val loss  : {val_losses[-1]:.4f}")
+        print(f"  Final perplexity: {torch.exp(torch.tensor(val_losses[-1])):.2f}")
+    else:
+        print("  Final val loss  : n/a (no evaluation step ran)")
     print(f"  Steps completed : {step:,}")
     print(f"  Tokens processed: {step * tokens_per_step:,}")
     print("=" * 62)

@@ -151,13 +151,13 @@ class NanoLLM(nn.Module):
         self.norm_final = RMSNorm(cfg.embed_dim)
         self.lm_head = nn.Linear(cfg.embed_dim, cfg.vocab_size, bias=False)
 
-        # Weight tying — saves ~20M params and improves training stability
+        # Weight tying — the LM head shares the embedding matrix
+        # (19,298,688 parameters at the GPT-2 vocabulary).
         self.lm_head.weight = self.token_embed.weight
 
-        # Precompute RoPE frequencies (not a parameter, just a buffer)
-        freqs = precompute_rope_freqs(cfg.embed_dim // cfg.num_heads, cfg.max_seq_len)
-        self.register_buffer("rope_freqs", freqs)
-
+        # RoPE is rebuilt on each forward. A saved `rope_freqs` buffer is not
+        # used: casting this module to bfloat16 drops the imaginary part of a
+        # complex buffer, and the published checkpoint was saved that way.
         # Initialize weights
         self.apply(self._init_weights)
 
@@ -184,9 +184,10 @@ class NanoLLM(nn.Module):
         assert T <= self.cfg.max_seq_len, f"Sequence length {T} exceeds max_seq_len {self.cfg.max_seq_len}"
 
         x = self.embed_dropout(self.token_embed(idx))
+        freqs = precompute_rope_freqs(self.cfg.embed_dim // self.cfg.num_heads, T).to(x.device)
 
         for block in self.blocks:
-            x = block(x, self.rope_freqs)
+            x = block(x, freqs)
 
         x = self.norm_final(x)
         logits = self.lm_head(x)   # (B, T, vocab_size)
@@ -208,7 +209,12 @@ class NanoLLM(nn.Module):
             # Crop to max context window
             idx_cond = idx if idx.size(1) <= self.cfg.max_seq_len else idx[:, -self.cfg.max_seq_len:]
             logits, _ = self(idx_cond)
-            logits = logits[:, -1, :] / temperature   # (B, vocab_size)
+            logits = logits[:, -1, :]  # (B, vocab_size)
+            if temperature is None or temperature <= 0:
+                next_token = torch.argmax(logits, dim=-1, keepdim=True)
+                idx = torch.cat([idx, next_token], dim=1)
+                continue
+            logits = logits / temperature
 
             if top_k is not None:
                 v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
@@ -219,3 +225,23 @@ class NanoLLM(nn.Module):
             idx = torch.cat([idx, next_token], dim=1)
 
         return idx
+
+
+# Keys that must never be copied out of a checkpoint. `rope_freqs` in the
+# published weights is the real part of a complex buffer after a bfloat16 cast.
+_SKIP_STATE_KEYS = {"rope_freqs", "rope_inv_freq"}
+
+
+def load_model_weights(model: NanoLLM, state_dict: dict, strict: bool = True):
+    """Load a checkpoint into `model`, ignoring derived RoPE buffers.
+
+    Also strips the `_orig_mod.` prefix left by `torch.compile`.
+    """
+    cleaned = {}
+    for key, value in state_dict.items():
+        if key.startswith("_orig_mod."):
+            key = key[len("_orig_mod."):]
+        if key in _SKIP_STATE_KEYS:
+            continue
+        cleaned[key] = value
+    return model.load_state_dict(cleaned, strict=strict)

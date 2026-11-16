@@ -26,7 +26,7 @@ mindmap
     Memory
       Weight_Tying[Weight Tying]
         Shared[Shared Embed/Head Memory]
-        Params[Saves 1.5M Params]
+        Params[Saves 19.3M Params]
 ```
 
 Here is the exact visual map of how NanoLLM processes text. Notice how the data flows sequentially from node to node.
@@ -67,7 +67,7 @@ Neural networks don’t inherently understand the order of words. If you feed th
 > [!TIP]
 > **Think of it like a clock:** If the word "cat" is at position 1, its vector points to 1 o'clock. If it's at position 2, it points to 2 o'clock. The attention mechanism can easily calculate the distance between words by just looking at the angle between their vectors! This allows the model to extrapolate to much longer contexts naturally.
 > 
-> 💻 **Code Pointer:** Check out the `apply_rotary_emb` function in `model.py` to see exactly how these mathematical rotations are applied to the vectors before attention is computed.
+> 💻 **Code Pointer:** Check out the `apply_rope` function in `model.py` to see exactly how these mathematical rotations are applied to the vectors before attention is computed.
 
 <details>
 <summary>🔬 <strong>Deep Dive: The Math of RoPE</strong></summary>
@@ -122,7 +122,7 @@ This eliminates the need to calculate the mean $\mu$, which requires an extra sy
 Inside every Transformer block is a Feed-Forward Network (FFN). This is essentially the "brain" where the model stores logic. For decades, the standard filter (activation function) was ReLU or GELU.
 
 **💡 The Solution: SwiGLU**
-**SwiGLU** (Swish Gated Linear Unit) splits the incoming data into two halves. It passes one half through a non-linear curve, and multiplies it by the other half (acting as a "Gate"). While it requires three matrices instead of two, SwiGLU has empirically proven to pack significantly more "reasoning capability" per parameter than GELU. This is exactly how a tiny 12.6M parameter model like NanoLLM can write coherent, logical short stories!
+**SwiGLU** (Swish Gated Linear Unit) splits the incoming data into two halves. It passes one half through a non-linear curve, and multiplies it by the other half (acting as a "Gate"). While it requires three matrices instead of two, SwiGLU has empirically proven to pack significantly more "reasoning capability" per parameter than GELU. This is exactly how a 29.9M parameter model like NanoLLM can write coherent, logical short stories!
 
 > 💻 **Code Pointer:** Find the `FeedForward` class in `model.py`. You will see `self.w1`, `self.w2`, and `self.w3` which map exactly to the SwiGLU equations.
 
@@ -173,11 +173,11 @@ The multiplication ($\odot$) acts as a dynamic **Information Gate**. The network
 In NLP models, the **Input Embedding** (translating words into numbers) and the **Language Model Head** (translating numbers back into words at the very end) are usually two massive memory blocks. 
 
 **💡 The Solution: Weight Tying**
-In NanoLLM, I used **Weight Tying**—literally pointing both layers to the exact same block of memory in PyTorch using `self.lm_head.weight = self.tok_emb.weight`. 
+In NanoLLM, I used **Weight Tying**—literally pointing both layers to the exact same block of memory in PyTorch using `self.lm_head.weight = self.token_embed.weight`. 
 
-**The Result:** I saved roughly **1.5 Million parameters** of VRAM space, and it actually stabilizes the training because the model doesn't have to learn the definition of a word twice (once for reading, once for speaking).
+**The Result:** I saved **19,298,688 parameters** of VRAM space (the full 50,257 × 384 embedding matrix), and it actually stabilizes the training because the model doesn't have to learn the definition of a word twice (once for reading, once for speaking).
 
-> 💻 **Code Pointer:** Open `model.py` and search for `self.lm_head.weight = self.tok_emb.weight`. That single line of Python is what achieves Weight Tying!
+> 💻 **Code Pointer:** Open `model.py` and search for `self.lm_head.weight = self.token_embed.weight`. That single line of Python is what achieves Weight Tying!
 
 ---
 

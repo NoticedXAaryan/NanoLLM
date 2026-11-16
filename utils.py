@@ -6,6 +6,8 @@ import os
 import math
 import json
 import torch
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from config import TrainConfig
 
@@ -46,25 +48,27 @@ def save_checkpoint(model, optimizer, step: int, loss: float, cfg: TrainConfig):
 
 def load_checkpoint(model, optimizer, path: str, device: torch.device):
     """Load checkpoint. Returns the step number."""
-    ckpt = torch.load(path, map_location=device)
-    model.load_state_dict(ckpt["model_state"])
+    from model import load_model_weights
+    ckpt = torch.load(path, map_location=device, weights_only=True)
+    load_model_weights(model, ckpt["model_state"])
     optimizer.load_state_dict(ckpt["optimizer_state"])
     print(f"[ckpt] Loaded checkpoint from step {ckpt['step']}, loss={ckpt['loss']:.4f}")
     return ckpt["step"]
 
 
-def plot_loss_curve(train_losses: list, val_losses: list, steps: list, save_path: str):
-    """Save a clean loss curve plot to disk."""
+def plot_loss_curve(train_losses: list, val_losses: list, steps: list, save_path: str,
+                    val_steps: list | None = None):
+    """Save a loss curve. Validation points use `val_steps`, not the first N train steps."""
     plt.figure(figsize=(10, 6))
-    plt.title("NanoLLM Training Loss")
-    plt.plot(steps, train_losses, label="Train Loss", alpha=0.3, color="#4C72B0")
-    if val_losses:
-        val_steps = [s for i, s in enumerate(steps) if i < len(val_losses)]
-        plt.plot(val_steps[:len(val_losses)], val_losses,
+    n = min(len(steps), len(train_losses))
+    plt.plot(steps[:n], train_losses[:n], label="Train Loss", alpha=0.3, color="#4C72B0")
+    if val_losses and val_steps:
+        m = min(len(val_steps), len(val_losses))
+        plt.plot(val_steps[:m], val_losses[:m],
                  label="Val Loss", linewidth=2, color="#DD8452", linestyle="--")
     plt.xlabel("Step")
     plt.ylabel("Cross-Entropy Loss")
-    plt.title("MiniLLM Training Loss")
+    plt.title("NanoLLM Training Loss")
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()

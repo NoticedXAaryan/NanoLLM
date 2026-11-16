@@ -1,6 +1,10 @@
 import json
-import matplotlib.pyplot as plt
 import os
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Set a beautiful, dark, modern developer aesthetic
 plt.style.use('dark_background')
@@ -8,9 +12,9 @@ fig, ax = plt.subplots(figsize=(14, 7), dpi=300)
 fig.patch.set_facecolor('#0d1117')
 ax.set_facecolor('#0d1117')
 
-log_path_1 = '../Training_Results/run_logs/run_001_train_log.jsonl'
-log_path_2 = '../Training_Results/run_logs/run_002_train_log.jsonl'
-output_path = '../assets/training_loss_curve.png'
+log_path_1 = os.path.join(ROOT, 'Training_Results/run_logs/run_001_train_log.jsonl')
+log_path_2 = os.path.join(ROOT, 'Training_Results/run_logs/run_002_train_log.jsonl')
+output_path = os.path.join(ROOT, 'assets/training_loss_curve.png')
 
 steps = []
 train_loss = []
@@ -56,14 +60,14 @@ ax.plot(val_steps, val_loss, color='#ff7b72', marker='o', markersize=6, linewidt
 
 # Annotate the VRAM swapping bottleneck
 ax.axvline(x=17550, color='#f0883e', linestyle='--', alpha=0.8, ymin=0.1, ymax=0.9)
-ax.annotate('System VRAM Bottleneck\n(Background Process Swapping)', 
+ax.annotate('System VRAM Bottleneck\n(Background Process Swapping)',
             xy=(17550, 2.5), xytext=(11000, 3.0),
             color='#f0883e', fontsize=11, fontweight='bold',
             arrowprops=dict(facecolor='#f0883e', edgecolor='#f0883e', arrowstyle='->', lw=2))
 
 # Annotate the resume point
 ax.axvline(x=4000, color='#3fb950', linestyle=':', alpha=0.6, ymin=0.1, ymax=0.9)
-ax.annotate('Resumed Training (Run 2)', 
+ax.annotate('Resumed Training (Run 2)',
             xy=(4000, 4.0), xytext=(5000, 4.5),
             color='#3fb950', fontsize=10,
             arrowprops=dict(facecolor='#3fb950', edgecolor='#3fb950', arrowstyle='->', lw=1))
@@ -72,7 +76,7 @@ ax.annotate('Resumed Training (Run 2)',
 if val_steps:
     final_step = val_steps[-1]
     final_val = val_loss[-1]
-    ax.annotate(f'Final Val Loss: {final_val:.3f}', 
+    ax.annotate(f'Final Val Loss: {final_val:.3f}',
                 xy=(final_step, final_val), xytext=(final_step - 4000, final_val + 0.5),
                 color='#ff7b72', fontsize=12, fontweight='bold',
                 bbox=dict(boxstyle="round,pad=0.3", fc="#0d1117", ec="#ff7b72", lw=1),
